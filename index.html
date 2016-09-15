@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		
+	</title>
+
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script src="./assets/js/cookie.min.js" type="text/javascript"></script>
+	<script src="./assets/js/scripts.js" type="text/javascript"></script>
+	
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Rambla" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="./assets/css/styles.css">
+
+</head>
+<body>
+	<div class="main">
+		<div class="container cf">
+
+			<div class="sidebar">
+
+				<form id="form" name="form" method="post">
+
+					<div class="tabs">
+						<ul class="tab-nav">
+							<li id="tab-nav-search" class="active">
+								<a role="button" title="Search">
+									Search
+								</a>
+							</li>
+							<li id="tab-nav-options">
+								<a role="button" title="Options">
+									Options
+								</a>
+							</li>
+							<li id="tab-nav-compare">
+								<a role="button" title="Options">
+									Compare
+								</a>
+							</li>
+						</ul>
+
+						<div id="search" class="tab-content active">
+							<div class="tab-inner">
+								<div class="field">
+									<label for="name">Name</label>
+									<input type="text" id="name" name="name" />
+								</div>
+								<div class="field">
+									<label>OVR</label>
+									<div class="two-cols">
+										<input type="number" id="ovr-min" name="ovr_min" />
+										<input type="number" id="ovr-max" name="ovr_max" />
+									</div>
+								</div>
+								<div class="field">
+									<label>Min. SPD</label>
+									<input type="number" id="spd-min" name="spd_min" />
+								</div>
+								<div class="field">
+									<label>Min. DRI</label>
+									<input type="number" id="dbr-min" name="dri_min" />
+								</div>
+								<div class="field">
+									<label>Min. 3PT</label>
+									<input type="number" id="tpt-min" name="tpt_min" />
+								</div>
+								<div class="field">
+									<label>Min. SHT</label>
+									<input type="number" id="sht-min" name="sht_min" />
+								</div>
+								<div class="field">
+									<label>Min. DEF</label>
+									<input type="number" id="def-min" name="def_min" />
+								</div>
+								<div class="field">
+									<label>Min. PAS</label>
+									<input type="number" id="pas-min" name="pas_min" />
+								</div>
+								<div class="field">
+									<label for="team">Team</label>
+									<select name="team">
+										<option value="" selected="selected">All</option>
+										<option value="ATL">Atlanta Hawks</option>
+										<option value="BOS">Boston Celtics</option>
+										<option value="BKL">Brooklyn Nets</option>
+										<option value="CHA">Charlotte Hornets</option>
+										<option value="CHI">Chicago Bulls</option>
+										<option value="CLE">Cleveland Cavaliers</option>
+										<option value="DAL">Dallas Mavericks</option>
+										<option value="DEN">Denver Nuggets</option>
+										<option value="DET">Detroit Pistons</option>
+										<option value="GSW">Golden State Warriors</option>
+										<option value="HOU">Houston Rockets</option>
+										<option value="IND">Indiana Pacers</option>
+										<option value="LAC">Los Angeles Clippers</option>
+										<option value="LAL">Los Angeles Lakers</option>
+										<option value="MEM">Memphis Grizzlies</option>
+										<option value="MIA">Miami Heat</option>
+										<option value="MIL">Milwaukee Bucks</option>
+										<option value="MIN">Minnesota Timberwolves</option>
+										<option value="NOP">New Orleans Pelicans</option>
+										<option value="NYK">New York Knicks</option>
+										<option value="OKC">Oklahoma City Thunder</option>
+										<option value="ORL">Orlando Magic</option>
+										<option value="PHI">Philadelphia 76ers</option>
+										<option value="PHX">Phoenix Suns</option>
+										<option value="POR">Portland Trailblazers</option>
+										<option value="SAC">Sacramento Kings</option>
+										<option value="SAS">San Antonio Spurs</option>
+										<option value="TOR">Toronto Raptors</option>
+										<option value="UTA">Utah Jazz</option>
+										<option value="WSH">Washington Wizards</option>
+									</select>
+								</div>
+								<div class="field">
+									<label for="lineup">Lineup</label>
+									<select name="lineup">
+										<option value="" selected="selected">All</option>
+										<option value="Big Man">Big Man</option>
+										<option value="Defensive">Defensive</option>
+										<option value="Shooting">Shooting</option>
+										<option value="Small Ball">Small Ball</option>
+										<option value="Two-Way">Two Way</option>
+									</select>
+								</div>
+								<div class="field">
+									<label for="pos">Position</label>
+									<select name="pos">
+										<option value="" selected="selected">All</option>
+										<option value="PG">Point Guard</option>
+										<option value="SG">Shooting Guard</option>
+										<option value="SF">Small Forward</option>
+										<option value="PF">Power Forward</option>
+										<option value="C">Center</option>
+									</select>
+								</div>
+								<div class="field">
+									<label for="type">Tier</label>
+									<select name="type">
+										<option value="" selected="selected">All</option>
+										<option value="Bronze">Bronze</option>
+										<option value="Silver">Silver</option>
+										<option value="Gold">Gold</option>
+										<option value="Elite">Elite</option>
+									</select>
+								</div>
+								<div class="field">
+									<label for="program">Program</label>
+									<select name="program">
+										<option value="" selected="selected">All</option>
+										<option value="Award Winners">Award Winners</option>
+										<option value="Base Set">Base Set</option>
+										<option value="Big Moments">Big Moments</option>
+										<option value="Campus Heroes">Campus Heroes</option>
+										<option value="Finals">Finals</option>
+										<option value="Impact Players">Impact Players</option>
+										<option value="International">International</option>
+										<option value="Juggernaut">Juggernaut</option>
+										<option value="Legends">Legends</option>
+										<option value="Master">Master</option>
+										<option value="Motivators">Motivators</option>
+										<option value="NBA Global">NBA Global Series</option>
+										<option value="Off-Season">Offseason Movers</option>
+										<option value="Playoffs">Playoffs</option>
+										<option value="Rookie Legends">Rookie Legends</option>
+										<option value="Season Veterans">Season Veterans</option>
+										<option value="Set Legends">Set Legends</option>
+										<option value="Signature">Signature</option>
+										<option value="Spotlight">Spotlight</option>
+										<option value="Supremacy">Supremacy</option>
+										<option value="Throwbacks">Throwbacks</option>
+									</select>
+								</div>
+								<div class="field">
+									<label for="orderby">Order By</label>
+									<select name="orderby">
+										<option value="ovr" selected="selected">OVR</option>
+										<option value="name">Name</option>
+										<option value="pos">Position</option>
+										<option value="lineup">Lineup</option>
+										<option value="spd">Speed STATS</option>
+										<option value="dri">Dribbling STATS</option>
+										<option value="tpt">3 Pointer STATS</option>
+										<option value="sht">Shooting STATS</option>
+										<option value="def">Defense STATS</option>
+										<option value="pas">Passing STATS</option>
+									</select>
+								</div>
+								<div class="field">
+									<label for="order">Order</label>
+									<select name="order">
+										<option value="DESC" selected="selected">Highest to Smallest</option>
+										<option value="ASC">Smallest to Highest</option>
+									</select>
+								</div>
+								<div class="field">
+									<input type="submit" id="search-submit" name="search" value="Search" />
+								</div>
+							</div>
+						</div>
+
+						<div id="options" class="tab-content">
+						    <div class="tab-inner">
+						       	<div id="switch">
+						       	</div>
+						    </div>
+						</div>
+
+						<div id="compare" class="tab-content">
+							<div class="tab-inner">
+								<div class="hidden">
+									Please Select more than one player to compare.
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+				</form>
+				
+			</div>
+
+			<div class="content">
+				<div class="inner">
+					<div id="loader" class="loader">
+						<div class="spinner one"></div>
+						<div class="spinner two"></div>
+						<div class="spinner three"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+</body>
+</html>

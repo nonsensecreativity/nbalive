@@ -1,0 +1,381 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	font-size: 16px;
+	font-family: 'Rambla', sans-serif;
+	background: #161616;
+	background-image: radial-gradient(circle farthest-corner at center, #07305c 0%, #1C262B 100%);
+	color: #fff;
+	position: relative;
+}
+
+body * {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.cf {
+    *zoom: 1;
+}
+
+.main .container {
+    padding-right: 330px;
+}
+
+.content {
+	float: left;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+}
+
+.sidebar {
+	position: fixed;
+	right: 0;
+	height: 100%;
+    width: 330px;
+    background-color: #fff;
+    color: #161616;
+    overflow-y: auto;
+}
+
+.tab-nav {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	clear: both;
+	overflow: hidden;
+}
+
+.tab-nav li {
+	float: left;
+	width: 33.33%;
+}
+
+.tab-nav li a {
+	text-align: center;
+	line-height: 3;
+	display: block;
+	cursor: pointer;
+}
+
+.tab-nav li:not(.active) {
+	background: #F4522C;
+	color: #FFF;
+	box-shadow: -1px 0 0 rgba(255,255,255,.35);
+}
+
+.tab-content {
+	height: 100%;
+	display: none;
+	visibility: hidden;
+}
+
+.tab-content.active {
+	display: block;
+	visibility: visible;
+}
+
+.tab-inner {
+	margin: 1em 1.5em;
+	overflow: visible;
+	height: 100%;
+}
+
+.inner {
+	height: 100%;
+	min-height: 100%;
+}
+
+.field {
+	padding: 0 0 .5em 0;
+	overflow: hidden;
+	font-size: .875em;
+}
+
+.field input[type="text"],
+.field input[type="number"],
+.field select {
+	height: 28px;
+	line-height: 28px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.field input[type="text"],
+.field .two-cols,
+.field select {
+	width: 70%;
+}
+
+.field .two-cols {
+	overflow: hidden;
+}
+
+.field label {
+	float: left;
+	width: 30%;
+	line-height: 30px;
+	height: 30px;
+}
+
+.field input[type="number"] {
+	width: 48%;
+}
+
+.field .two-cols input:first-child {
+	float: left;
+}
+
+.field .two-cols input:last-child {
+	float: right;
+}
+
+.field input[type="submit"],
+.field button,
+.field .button {
+	float: right;
+	box-shadow: none;
+	border: 0;
+	background: #161616;
+	color: #fff;
+	padding: .75em 1.5em;
+	cursor: pointer;
+	margin-top: .5em;
+}
+
+.field input[type="submit"]:hover,
+.field input[type="submit"]:focus,
+.field button:hover,
+.field button:focus,
+.field .button:hover,
+.field .button:focus {
+	background: #F4522C;
+	transition: all .2s ease-in-out;
+	-moz-transition: all .2s ease-in-out;
+	-webkit-transition: all .2s ease-in-out; 
+}
+
+
+#switch {
+	overflow: hidden;
+}
+.switch-box {
+	width: 48%;
+	float: left;
+	margin: 0 0 10px 0;
+}
+
+.switch-box:nth-child(even) {
+	float: right;
+}
+
+.switch-box abbr {
+	display: inline-block;
+	vertical-align: middle;
+	width: 40px;
+}
+
+.switch {
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
+	width: 80px;
+	height: 30px;
+	border-radius: 18px;
+	cursor: pointer;
+	padding: 0;
+	background: #FFF;
+}
+
+.switch-input {
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+}
+
+.switch-label {
+	position: relative;
+	display: block;
+	height: inherit;
+	text-transform: uppercase;
+	border-radius: inherit;
+	background: #FFF;
+	font-size: 12px;
+	font-weight: 400;
+	letter-spacing: 1px;
+	border: solid 2px #95a5a6;
+}
+
+.switch-label:before, .switch-label:after {
+	position: absolute;
+	top: 50%;
+	margin-top: -.5em;
+	line-height: 1;
+	-webkit-transition: inherit;
+	-moz-transition: inherit;
+	-o-transition: inherit;
+	transition: inherit;
+}
+.switch-label:before {
+	content: attr(data-off);
+	right: 11px;
+	color: #95a5a6;
+}
+.switch-label:after {
+	content: attr(data-on);
+	left: 11px;
+	opacity: 0;
+	color: #27ae60;
+}
+.switch-input:checked ~ .switch-label {
+	background: #FFF;
+	border-color: #27ae60;
+}
+.switch-input:checked ~ .switch-label:before {
+	opacity: 0;
+}
+.switch-input:checked ~ .switch-label:after {
+	opacity: 1;
+}
+.switch-handle {
+	position: absolute;
+	border-radius: 100%;
+	top: 50%;
+	margin-top: -11px;
+	left: 6px;
+	background: #95a5a6;
+	width: 22px;
+	height: 22px;
+}
+.switch-handle:before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -6px 0 0 -6px;
+	width: 12px;
+	height: 12px;
+	border-radius: 6px;
+	background: #fff;
+}
+
+.switch-input:checked ~ .switch-handle {
+	left: 52px;
+	background: #27ae60;
+}
+
+/* Transition
+========================== */
+.switch-label, .switch-handle {
+	transition: All 0.3s ease;
+	-webkit-transition: All 0.3s ease;
+	-moz-transition: All 0.3s ease;
+	-o-transition: All 0.3s ease;
+}
+
+
+.hidden {
+	display: none;
+}
+
+#player-list {
+	border-spacing: 0;
+	width: 100%;
+}
+
+.player-list-head tr {
+	background: rgba( 0, 0, 0, .35 );
+}
+.player-list-head td {
+	padding: 1em 1.25em;
+}
+.player-list-body td {
+	padding: .75em 1.25em;
+}
+
+.loader {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 128px;
+	height: 128px;
+	border-radius: 50%;
+	perspective: 1000px;
+	margin-left: -229px;
+	margin-top: -64px;
+}
+
+.spinner {
+	position: absolute;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;  
+}
+
+.spinner.one {
+	left: 0%;
+	top: 0%;
+	animation: rotate-one 1s linear infinite;
+	border-bottom: 6px solid #EFEFFA;
+}
+
+.spinner.two {
+	right: 0%;
+	top: 0%;
+	animation: rotate-two 1s linear infinite;
+	border-right: 6px solid #EFEFFA;
+}
+
+.spinner.three {
+	right: 0%;
+	bottom: 0%;
+	animation: rotate-three 1s linear infinite;
+	border-top: 6px solid #EFEFFA;
+}
+
+@keyframes rotate-one {
+  0% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-two {
+  0% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-three {
+  0% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+  }
+}
