@@ -322,7 +322,8 @@ window.nba = ( function( window ) {
 
 	NBA.buildTable = function( data ) {
 
-		var div, spin, child, key, i, j, lenI, lenJ, className, table, thead, tbody, theadInner = '', tbodyInner = '';
+		var div, spin, child, key, i, j, lenI, lenJ, className, table, thead, tbody, theadInner = '', tbodyInner = '',
+			currentRow;
 
 		table = document.createElement( 'table' );
 		table.setAttribute( 'id', 'player-list' );
@@ -345,11 +346,23 @@ window.nba = ( function( window ) {
 
 			for( j = 0, lenJ = data.rows[ i ].c.length; j < lenJ; j++ ) {
 
+				currentRow  = data.cols[ j ].label.toString().toLowerCase().replace( ' ', '-' );
 				tbodyInner += '<td class="';
-				tbodyInner += data.cols[ j ].label.toString().toLowerCase().replace( ' ', '-' ) + '">';
+				tbodyInner +=  currentRow;
 
 				if( null !== data.rows[ i ].c[ j ] ) {
-					tbodyInner += data.rows[ i ].c[ j ].v;
+
+					if( NBA.hasClassRow( currentRow ) ) {
+						tbodyInner += ' ' + data.rows[ i ].c[ j ].v.toString().toLowerCase().replace( ' ', '-' ) + '">';
+					} else {
+						tbodyInner += '">';
+					}
+
+					tbodyInner += '<span>' + data.rows[ i ].c[ j ].v + '</span>';
+
+				} else {
+
+					tbodyInner += '">';
 				}
 
 				tbodyInner += '</td>'; 
@@ -376,6 +389,9 @@ window.nba = ( function( window ) {
 
 	};
 
+	NBA.hasClassRow = function( currentRow ) {
+		return ( currentRow === 'team' || currentRow === 'type' || currentRow === 'position' );
+	};
 
 	NBA.addEvent = function(evt, elem, func, capture ) {
 		if( elem || elem.length > 0 ) {

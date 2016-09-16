@@ -321,19 +321,153 @@ body * {
 .player-list-head tr {
 	background: rgba( 0, 0, 0, .35 );
 }
+
 .player-list-head td {
 	padding: 1em 1.25em;
 }
+
 .player-list-body td {
-	padding: .75em 1.25em;
+	padding: 0 1.25em;
+	line-height: 40px;
 }
+
 .player-list-body tr:nth-child(even) td {
 	background: rgba( 255, 255, 255, .065 );
 }
+
 .player-list-body tr:hover td {
 	background: #F4522C;
 	cursor: pointer;
 }
+
+.player-list-body .team span {
+	background-image: url( "../img/team-sprite-42x42.png" );
+	width: 42px;
+	height: 42px;
+	text-indent: -9999px;
+	display: block;
+}
+
+.team.atl span {
+    background-position: 0 0;
+}
+
+.team.bos span {
+    background-position: -52px;
+}
+
+.team.cha span {
+    background-position: -104px;
+}
+
+.team.chi span {
+    background-position: -156px;
+}
+
+.team.cle span {
+    background-position: -208px;
+}
+
+.team.dal span {
+    background-position: -260px;
+}
+
+.team.den span {
+    background-position: -312px;
+}
+
+.team.det span {
+    background-position: -364px;
+}
+
+.team.gsw span {
+    background-position: -416px;
+}
+
+.team.hou span {
+    background-position: -468px;
+}
+
+.team.ind span {
+    background-position: -520px;
+}
+
+.team.lac span {
+    background-position: -572px;
+}
+
+.team.lal span {
+    background-position: -624px;
+}
+
+.team.mem span {
+    background-position: -676px;
+}
+
+.team.mia span {
+    background-position: -728px;
+}
+
+.team.mil span {
+    background-position: -780px;
+}
+
+.team.min span {
+    background-position: -832px;
+}
+
+.team.bkn span {
+    background-position: -884px;
+}
+
+.team.nop span {
+    background-position: -936px;
+}
+
+.team.nyk span {
+    background-position: -988px;
+}
+
+.team.okc span {
+    background-position: -1040px;
+}
+
+.team.orl span {
+    background-position: -1092px;
+}
+
+.team.phi span {
+    background-position: -1144px;
+}
+
+.team.phx span {
+    background-position: -1196px;
+}
+
+.team.por span {
+    background-position: -1248px;
+}
+
+.team.sac span {
+    background-position: -1300px;
+}
+
+.team.sas span {
+    background-position: -1352px;
+}
+
+.team.tor span {
+    background-position: -1404px;
+}
+
+.team.uta span {
+    background-position: -1456px;
+}
+
+.team.wsh span {
+    background-position: -1508px;
+}
+
 .loader {
 	position: absolute;
 	top: 50%;
