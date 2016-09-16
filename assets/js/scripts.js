@@ -229,7 +229,7 @@ window.nba = ( function( window ) {
 		var form = new FormData( evt.currentTarget ),
 			spin = document.getElementById( 'loader' ),
 			wher = false,
-			qStr = 'SELECT A, B, C, G, I, M',
+			qStr = 'SELECT A, B, C, G, I, M LIMIT 10',
 			data = {
 				name    : form.get( 'name' ),
 				ovr     : [
@@ -322,8 +322,6 @@ window.nba = ( function( window ) {
 
 	NBA.buildTable = function( data ) {
 
-		console.log(data);
-		
 		var div, spin, child, key, i, j, lenI, lenJ, className, table, thead, tbody, theadInner = '', tbodyInner = '';
 
 		table = document.createElement( 'table' );
@@ -377,6 +375,7 @@ window.nba = ( function( window ) {
 		div.appendChild( table );
 
 	};
+
 
 	NBA.addEvent = function(evt, elem, func, capture ) {
 		if( elem || elem.length > 0 ) {

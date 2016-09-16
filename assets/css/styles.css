@@ -35,9 +35,6 @@ body * {
     *zoom: 1;
 }
 
-.main {
-	margin-bottom: 40px;
-}
 .main .container {
     padding-right: 330px;
 }
@@ -330,17 +327,23 @@ body * {
 .player-list-body td {
 	padding: .75em 1.25em;
 }
-
+.player-list-body tr:nth-child(even) td {
+	background: rgba( 255, 255, 255, .065 );
+}
+.player-list-body tr:hover td {
+	background: #F4522C;
+	cursor: pointer;
+}
 .loader {
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	width: 128px;
-	height: 128px;
+	width: 64px;
+	height: 64px;
 	border-radius: 50%;
-	perspective: 1000px;
+	perspective: 800px;
 	margin-left: -229px;
-	margin-top: -64px;
+	margin-top: -32px;
 }
 
 .spinner {
