@@ -1,12 +1,12 @@
-window.nba = ( function( window ) {
+window.nba = ( function() {
 	"use strict";
 
 	var NBA = {},
-		CONT = document.querySelector( '.main .container' ),
-		TABS = document.querySelector( '.tabs' ),
-		CLIENT_ID   = '',
-		API_KEY     = 'AIzaSyA-n8PLEMahQMw7ck6edby5CIssqF71f1c',
-		SCOPES      = ["https://www.googleapis.com/auth/spreadsheets.readonly"],
+		//CONT = document.querySelector( '.main .container' ),
+		//TABS = document.querySelector( '.tabs' ),
+		//CLIENT_ID   = '',
+		//API_KEY     = 'AIzaSyA-n8PLEMahQMw7ck6edby5CIssqF71f1c',
+		//SCOPES      = ["https://www.googleapis.com/auth/spreadsheets.readonly"],
 		SHEET_ID    = '1fteH6HOqQXmgMnAhhek0W6_BDvVMNlBu25SCCNruYbc', // JK's 2016 NBA LIVE Mobile Workbook
 		SHEET_GID   = '724315897',
 		SHEET_URL   = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&gid=' + SHEET_GID,
@@ -100,10 +100,11 @@ window.nba = ( function( window ) {
 			pas       : 'S',
 		},
 		EXC_COOKIE  = 'nbalive_excl_stats',
-		COMP_COOKIE = 'nbalive_compare',
+		//COMP_COOKIE = 'nbalive_compare',
 		ABILITIES = [
 			'SPD', 'DRI', 'TPT', 'SHT', 'DEF', 'PAS'
-		];
+		],
+		IS_SINGLE = false;
 
 	NBA.init = function() {
 
@@ -217,19 +218,19 @@ window.nba = ( function( window ) {
 	};
 
 	NBA.gInit = function() {
-
-		NBA.requestData();
-		var form = document.forms.namedItem( 'form' );
-		NBA.addEvent( 'submit', form, NBA.processForm, false );
+		IS_SINGLE = false;
+		NBA.requestData( '' );
+		var btn = document.getElementById( 'search-submit' );
+		NBA.addEvent( 'click', btn, NBA.processForm, false );
 	};
 
 	NBA.processForm = function( evt ) {
 		evt.preventDefault();
 
-		var form = new FormData( evt.currentTarget ),
+		var form = new FormData( document.forms.namedItem( 'form' ) ),
 			spin = document.getElementById( 'loader' ),
 			wher = false,
-			qStr = 'SELECT A, B, C, G, I, M LIMIT 10',
+			qStr = 'SELECT A, B, C, G, I, M',
 			data = {
 				name    : form.get( 'name' ),
 				ovr     : [
@@ -251,9 +252,19 @@ window.nba = ( function( window ) {
 				order   : form.get( 'order' )
 			},
 			number = [ 'spd', 'dri', 'tpt', 'sht', 'def', 'pas' ],
+			table  = document.getElementById( 'player-list' ),
+			single = document.getElementById( 'player-single' ),
 			key;
 
 		NBA.removeClass( spin, 'hidden' );
+
+		if( single ) {
+			NBA.addClass( single, 'hidden' );
+		}
+
+		if( table ) {
+			NBA.addClass( table, 'hidden' );
+		}
 
 		for( key in data ) {
 
@@ -296,17 +307,18 @@ window.nba = ( function( window ) {
 			}
 		}
 
+		IS_SINGLE = false;
 		NBA.requestData( qStr );
 	};
 
 
-	NBA.requestData = function( qStr = false ) {
+	NBA.requestData = function( qStr ) {
 		var query = new google.visualization.Query( SHEET_URL );
 			qStr  = qStr ? qStr : 'SELECT A, B, C, G, I, M';
 
 		query.setQuery( qStr );
 		query.send( NBA.buildResponse );
-	}
+	};
 
 	NBA.buildResponse = function( response ) {
 
@@ -317,13 +329,17 @@ window.nba = ( function( window ) {
 		var data = response.getDataTable(),
 			str  = data.toJSON();
 
-		NBA.buildTable( JSON.parse( str ) );
+		if( IS_SINGLE ) {
+			NBA.buildTableSingle( JSON.parse( str ) );
+		} else {
+			NBA.buildTable( JSON.parse( str ) );
+		}
 	};
 
 	NBA.buildTable = function( data ) {
 
-		var div, spin, child, key, i, j, lenI, lenJ, className, table, thead, tbody, theadInner = '', tbodyInner = '',
-			currentRow;
+		var div, spin, child, key, i, j, lenI, lenJ, table, thead, tbody, theadInner = '', tbodyInner = '',
+			currentRow, theRow;
 
 		table = document.createElement( 'table' );
 		table.setAttribute( 'id', 'player-list' );
@@ -342,7 +358,7 @@ window.nba = ( function( window ) {
 
 		for( i = 0, lenI = data.rows.length; i < lenI; i++ ) {
 
-			tbodyInner += '<tr>';
+			tbodyInner = '';
 
 			for( j = 0, lenJ = data.rows[ i ].c.length; j < lenJ; j++ ) {
 
@@ -368,10 +384,12 @@ window.nba = ( function( window ) {
 				tbodyInner += '</td>'; 
 			}
 
-			tbodyInner += '</tr>';
-		}
+			theRow = document.createElement( 'tr' );
+			theRow.innerHTML = tbodyInner;
 
-		tbody.innerHTML += tbodyInner;
+			NBA.addEvent( 'click', theRow, NBA.processRow, true );
+			tbody.appendChild( theRow );
+		}
 
 		table.appendChild( thead );
 		table.appendChild( tbody );
@@ -379,18 +397,127 @@ window.nba = ( function( window ) {
 		div   = document.querySelector( '.content .inner' );
 		child = document.getElementById( 'player-list' );
 		spin  = document.getElementById( 'loader' );
-		
+
 		if( child ) {
 			div.removeChild( child );
 		}
-		
+
 		NBA.addClass( spin, 'hidden' );
 		div.appendChild( table );
 
 	};
 
+	NBA.buildTableSingle = function( data ) {
+		var div, spin, i, len, className, list, table, thead, tbody, theadInner = '', tbodyInner = '', currentRow, skip = [];
+
+		list  = document.getElementById( 'player-list' );
+		spin  = document.getElementById( 'loader' );
+
+		if( list ) {
+			NBA.addClass( list, 'hidden' );
+		}
+
+		if( list ) {
+			NBA.removeClass( spin, 'hidden' );
+		}
+
+		div   = document.querySelector( '.content .inner' );
+
+		console.log( thead, theadInner );
+		
+		table = document.createElement( 'div' );
+		table.setAttribute( 'id', 'player-single' );
+
+		tbody = document.createElement( 'div' );
+		tbody.className = 'player-single-body';
+
+		//for( key in data.cols ) {
+			//thead = document.createElement( 'div' );
+			//thead.className = 'player-single-head';
+			//theadInner += '<span>' + data.cols[ key ].label + '</span>';
+		//}
+
+		//thead.innerHTML = '<tr>' + theadInner + '</tr>';
+
+		console.log( data.rows );
+
+		if( data.rows ) {
+
+			for( i = ABILITIES.length, len = data.rows[0].c.length; i < len; i ++ ) {
+
+				currentRow  = data.cols[ i ].label.toString().replace( ' ', '-' );
+
+				if( !STATS_ABBR[ currentRow ] ) {
+
+				} else {
+
+					if( ABILITIES.indexOf( currentRow ) > -1 && skip.indexOf( currentRow ) === -1  ) {
+						skip.push( currentRow );
+					} else {
+
+						if( ABILITIES.indexOf( currentRow ) > -1 ) {
+							className = ' ability';
+						} else {
+							className = '';
+						}
+
+						tbodyInner += '<div class="stats' + className + '">';
+						tbodyInner += '<div class="stats-detail"><div class="stats-label">' + STATS_ABBR[ currentRow ] + '</div>';
+						tbodyInner += '<div class="stats-value">' + ( data.rows[ 0].c[ i ].v ) + '</div></div>';
+						tbodyInner += '<div class="stats-bar">';
+						tbodyInner += '<div class="stats-bar-value" style="width:' + ( data.rows[ 0 ].c[ i ].v ) + '%;"></div>';
+						tbodyInner += '</div></div>';
+					}
+					
+				}
+			}
+		}
+
+		tbody.innerHTML = tbodyInner;
+		table.appendChild( tbody );
+		div.appendChild( table );
+
+		NBA.addClass( spin, 'hidden' );
+	};
+
+	NBA.processRow = function( evt ) {
+		var name, team, pos, lineup, ovr, elem, child, i, len, currentChild, qStr;
+
+		elem  = evt.currentTarget;
+		child = elem.getElementsByTagName( 'td' );
+
+		for( i = 0, len = child.length; i < len; i++ ) {
+			
+			if( currentChild = child[i].firstElementChild ) {
+
+				if( child[i].className.indexOf( 'player-name' ) > -1 ) {
+					name = currentChild.textContent;
+				} else if( child[i].className.indexOf( 'team' ) > - 1 ) {
+					team = currentChild.textContent;
+				} else if( child[i].className.indexOf( 'position' ) > - 1 ) {
+					pos = currentChild.textContent;
+				} else if( child[i].className.indexOf( 'game-ovr' ) > - 1 ) {
+					ovr = currentChild.textContent;
+				} else if( child[i].className.indexOf( 'lineup' ) > - 1 ) {
+					lineup = currentChild.textContent;
+				} else {
+					continue;
+				}
+			}
+		}
+
+		qStr  = 'SELECT * WHERE ' + TABLE_MAP.name + ' = "' + name + '"';
+		qStr += ' AND ' + TABLE_MAP.pos + ' = "' + pos + '"';
+		qStr += ' AND ' + TABLE_MAP.lineup + ' = "' + lineup + '"';
+		qStr += ' AND ' + TABLE_MAP.ovr + ' = ' + parseInt( ovr ) + '';
+		qStr += ' LIMIT 1';
+
+		IS_SINGLE = true;
+		NBA.requestData( qStr );
+	};
+
 	NBA.hasClassRow = function( currentRow ) {
-		return ( currentRow === 'team' || currentRow === 'type' || currentRow === 'position' );
+		return ( currentRow === 'team' || currentRow === 'type' || currentRow === 'position' || currentRow === 'lineup' );
 	};
 
 	NBA.addEvent = function(evt, elem, func, capture ) {

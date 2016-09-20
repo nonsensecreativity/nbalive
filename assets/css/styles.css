@@ -1,4 +1,250 @@
-html, body {
+/*
+#003973;
+#001429;
+*/
+
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+# Normalize
+# General
+# Header
+# Tabs
+# Fields
+# Switch Box
+# List Table
+# Team Icons
+# Type Icons
+# Lineup Icons
+# Single Player
+# Stats Box
+# Miscellaneous
+# Loading Spinner
+# Animation
+
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+# Normalize
+--------------------------------------------------------------*/
+
+html {
+	font-family: sans-serif;
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+main,
+menu,
+nav,
+section,
+summary {
+	display: block;
+}
+
+audio,
+canvas,
+progress,
+video {
+	display: inline-block;
+	vertical-align: baseline;
+}
+
+audio:not([controls]) {
+	display: none;
+	height: 0;
+}
+
+[hidden],
+template {
+	display: none;
+}
+
+a {
+	background-color: transparent;
+}
+
+a:active,
+a:hover {
+	outline: 0;
+}
+
+abbr[title] {
+	border-bottom: 1px dotted;
+}
+
+b,
+strong {
+	font-weight: bold;
+}
+
+dfn {
+	font-style: italic;
+}
+
+h1 {
+	font-size: 2em;
+	margin: 0.67em 0;
+}
+
+mark {
+	color: #000;
+	padding: 2px 3px;
+}
+
+small {
+	font-size: 80%;
+}
+
+sub,
+sup {
+	font-size: 75%;
+	line-height: 0;
+	position: relative;
+	vertical-align: baseline;
+}
+
+sup {
+	top: -0.5em;
+}
+
+sub {
+	bottom: -0.25em;
+}
+
+img {
+	border: 0;
+}
+
+svg:not(:root) {
+	overflow: hidden;
+}
+
+figure {
+	margin: 1em 40px;
+}
+
+hr {
+	box-sizing: content-box;
+	height: 0;
+}
+
+pre {
+	overflow: auto;
+}
+
+code,
+kbd,
+pre,
+samp {
+	font-family: monospace, monospace;
+	font-size: 1em;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+	color: inherit;
+	font: inherit;
+	margin: 0;
+}
+
+button {
+	overflow: visible;
+}
+
+button,
+select {
+	text-transform: none;
+}
+
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+	-webkit-appearance: button;
+	cursor: pointer;
+}
+
+button[disabled],
+html input[disabled] {
+	cursor: default;
+}
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+	border: 0;
+	padding: 0;
+}
+
+input {
+	line-height: normal;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+	box-sizing: border-box;
+	padding: 0;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+	height: auto;
+}
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+	-webkit-appearance: none;
+}
+
+fieldset {
+	border: 1px solid #c0c0c0;
+	margin: 0 2px;
+	padding: 0.35em 0.625em 0.75em;
+}
+
+legend {
+	border: 0;
+	padding: 0;
+}
+
+textarea {
+	overflow: auto;
+}
+
+optgroup {
+	font-weight: bold;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+td,
+th {
+	padding: 0;
+}
+
+/*--------------------------------------------------------------
+# General
+--------------------------------------------------------------*/
+
+html,
+body {
 	height: 100%;
 }
 
@@ -6,8 +252,8 @@ body {
 	font-size: 16px;
 	font-family: 'Rambla', sans-serif;
 	background: #161616;
-	background-image: radial-gradient(circle farthest-corner at center, #07305c 0%, #1C262B 100%);
-	color: #fff;
+	background-image: radial-gradient(circle farthest-corner at center, #002D52 0%, #001C3A 100%);
+	color: #FFF;
 	position: relative;
 }
 
@@ -17,44 +263,56 @@ body * {
 	-webkit-box-sizing: border-box;
 }
 
-.cf:before,
-.cf:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
-}
-
-.cf:after {
-    clear: both;
-}
-
-/**
- * For IE 6/7 only
- * Include this rule to trigger hasLayout and contain floats.
- */
-.cf {
-    *zoom: 1;
-}
-
 .main .container {
-    padding-right: 330px;
+	padding-right: 330px;
 }
 
 .content {
 	float: left;
-    width: 100%;
-    height: 100%;
-    min-height: 100%;
+	width: 100%;
+	height: 100%;
+	min-height: 100%;
 }
 
 .sidebar {
 	position: fixed;
 	right: 0;
 	height: 100%;
-    width: 330px;
-    background-color: #fff;
-    color: #161616;
-    overflow-y: auto;
+	width: 330px;
+	background-color: #FFF;
+	color: #161616;
+	overflow-y: auto;
 }
+
+.inner {
+	height: 100%;
+	min-height: 100%;
+}
+
+/*--------------------------------------------------------------
+# Header
+--------------------------------------------------------------*/
+
+.header {
+	width: 100%;
+	height: 48px;
+	line-height: 48px;
+	bottom: 0;
+	font-size: .875em;
+	background: #003D7B;
+	padding: 0 1.25em;
+	height: 100%;
+}
+
+.header a {
+	color: #FFF;
+	text-decoration: none;
+	font-weight: 700;
+}
+
+/*--------------------------------------------------------------
+# Tabs
+--------------------------------------------------------------*/
 
 .tab-nav {
 	margin: 0;
@@ -71,15 +329,16 @@ body * {
 
 .tab-nav li a {
 	text-align: center;
-	line-height: 3;
+	line-height: 48px;
+	height: 48px;
 	display: block;
 	cursor: pointer;
 }
 
 .tab-nav li:not(.active) {
-	background: #F4522C;
+	background: #003D7B;
 	color: #FFF;
-	box-shadow: -1px 0 0 rgba(255,255,255,.35);
+	box-shadow: -1px 0 0 rgba(255, 255, 255, 0.35);
 }
 
 .tab-content {
@@ -93,16 +352,15 @@ body * {
 	visibility: visible;
 }
 
-.tab-inner {
+.tab-content .tab-inner {
 	margin: 1em 1.5em;
 	overflow: visible;
 	height: 100%;
 }
 
-.inner {
-	height: 100%;
-	min-height: 100%;
-}
+/*--------------------------------------------------------------
+# Fields
+--------------------------------------------------------------*/
 
 .field {
 	padding: 0 0 .5em 0;
@@ -119,8 +377,8 @@ body * {
 	padding-right: 5px;
 }
 
-.field input[type="text"],
 .field .two-cols,
+.field input[type="text"],
 .field select {
 	width: 70%;
 }
@@ -154,8 +412,8 @@ body * {
 	float: right;
 	box-shadow: none;
 	border: 0;
-	background: #161616;
-	color: #fff;
+	background: #003D7B;
+	color: #FFF;
 	padding: .75em 1.5em;
 	cursor: pointer;
 	margin-top: .5em;
@@ -167,16 +425,20 @@ body * {
 .field button:focus,
 .field .button:hover,
 .field .button:focus {
-	background: #F4522C;
+	background: #002448;
 	transition: all .2s ease-in-out;
 	-moz-transition: all .2s ease-in-out;
-	-webkit-transition: all .2s ease-in-out; 
+	-webkit-transition: all .2s ease-in-out;
 }
 
+/*--------------------------------------------------------------
+# Switch Box
+--------------------------------------------------------------*/
 
 #switch {
 	overflow: hidden;
 }
+
 .switch-box {
 	width: 48%;
 	float: left;
@@ -191,6 +453,7 @@ body * {
 	display: inline-block;
 	vertical-align: middle;
 	width: 40px;
+	border-bottom: 0;
 }
 
 .switch {
@@ -222,10 +485,11 @@ body * {
 	font-size: 12px;
 	font-weight: 400;
 	letter-spacing: 1px;
-	border: solid 2px #95a5a6;
+	border: solid 2px #95A5A6;
 }
 
-.switch-label:before, .switch-label:after {
+.switch-label:before,
+.switch-label:after {
 	position: absolute;
 	top: 50%;
 	margin-top: -.5em;
@@ -235,37 +499,44 @@ body * {
 	-o-transition: inherit;
 	transition: inherit;
 }
+
 .switch-label:before {
 	content: attr(data-off);
 	right: 11px;
-	color: #95a5a6;
+	color: #95A5A6;
 }
+
 .switch-label:after {
 	content: attr(data-on);
 	left: 11px;
 	opacity: 0;
-	color: #27ae60;
+	color: #2f96ff;
 }
+
 .switch-input:checked ~ .switch-label {
 	background: #FFF;
-	border-color: #27ae60;
+	border-color: #2f96ff;
 }
+
 .switch-input:checked ~ .switch-label:before {
 	opacity: 0;
 }
+
 .switch-input:checked ~ .switch-label:after {
 	opacity: 1;
 }
+
 .switch-handle {
 	position: absolute;
 	border-radius: 100%;
 	top: 50%;
 	margin-top: -11px;
 	left: 6px;
-	background: #95a5a6;
+	background: #95A5A6;
 	width: 22px;
 	height: 22px;
 }
+
 .switch-handle:before {
 	content: "";
 	position: absolute;
@@ -275,43 +546,25 @@ body * {
 	width: 12px;
 	height: 12px;
 	border-radius: 6px;
-	background: #fff;
+	background: #FFF;
 }
 
 .switch-input:checked ~ .switch-handle {
 	left: 52px;
-	background: #27ae60;
+	background: #2f96ff;
 }
 
-.header {
-	width: 100%;
-	height: 50px;
-	line-height: 50px;
-	bottom: 0;
-	font-size: .875em;
-	background: #F4522C;
-	padding: 0 1.25em;
-	height: 100%;
-}
-.header a {
-	color: #fff;
-	text-decoration: none;
-	font-weight: 700;
-}
-
-/* Transition
-========================== */
-.switch-label, .switch-handle {
+.switch-label,
+.switch-handle {
 	transition: All 0.3s ease;
 	-webkit-transition: All 0.3s ease;
 	-moz-transition: All 0.3s ease;
 	-o-transition: All 0.3s ease;
 }
 
-
-.hidden {
-	display: none;
-}
+/*--------------------------------------------------------------
+# List Table
+--------------------------------------------------------------*/
 
 #player-list {
 	border-spacing: 0;
@@ -319,7 +572,7 @@ body * {
 }
 
 .player-list-head tr {
-	background: rgba( 0, 0, 0, .35 );
+	background: rgba(0, 0, 0, 0.65);
 }
 
 .player-list-head td {
@@ -332,141 +585,280 @@ body * {
 }
 
 .player-list-body tr:nth-child(even) td {
-	background: rgba( 255, 255, 255, .065 );
+	background: rgba(255, 255, 255, 0.065);
 }
 
 .player-list-body tr:hover td {
-	background: #F4522C;
+	background: #003D7B;
 	cursor: pointer;
 }
 
+/*--------------------------------------------------------------
+# Team Icons
+--------------------------------------------------------------*/
+
 .player-list-body .team span {
-	background-image: url( "../img/team-sprite-42x42.png" );
+	background-image: url("../img/team-sprite.png");
 	width: 42px;
 	height: 42px;
 	text-indent: -9999px;
 	display: block;
 }
 
-.team.atl span {
-    background-position: 0 0;
+.player-list-body .team.atl span {
+	background-position: 0 0;
 }
 
-.team.bos span {
-    background-position: -52px;
+.player-list-body .team.bos span {
+	background-position: -52px;
 }
 
-.team.cha span {
-    background-position: -104px;
+.player-list-body .team.cha span {
+	background-position: -104px;
 }
 
-.team.chi span {
-    background-position: -156px;
+.player-list-body .team.chi span {
+	background-position: -156px;
 }
 
-.team.cle span {
-    background-position: -208px;
+.player-list-body .team.cle span {
+	background-position: -208px;
 }
 
-.team.dal span {
-    background-position: -260px;
+.player-list-body .team.dal span {
+	background-position: -260px;
 }
 
-.team.den span {
-    background-position: -312px;
+.player-list-body .team.den span {
+	background-position: -312px;
 }
 
-.team.det span {
-    background-position: -364px;
+.player-list-body .team.det span {
+	background-position: -364px;
 }
 
-.team.gsw span {
-    background-position: -416px;
+.player-list-body .team.gsw span {
+	background-position: -416px;
 }
 
-.team.hou span {
-    background-position: -468px;
+.player-list-body .team.hou span {
+	background-position: -468px;
 }
 
-.team.ind span {
-    background-position: -520px;
+.player-list-body .team.ind span {
+	background-position: -520px;
 }
 
-.team.lac span {
-    background-position: -572px;
+.player-list-body .team.lac span {
+	background-position: -572px;
 }
 
-.team.lal span {
-    background-position: -624px;
+.player-list-body .team.lal span {
+	background-position: -624px;
 }
 
-.team.mem span {
-    background-position: -676px;
+.player-list-body .team.mem span {
+	background-position: -676px;
 }
 
-.team.mia span {
-    background-position: -728px;
+.player-list-body .team.mia span {
+	background-position: -728px;
 }
 
-.team.mil span {
-    background-position: -780px;
+.player-list-body .team.mil span {
+	background-position: -780px;
 }
 
-.team.min span {
-    background-position: -832px;
+.player-list-body .team.min span {
+	background-position: -832px;
 }
 
-.team.bkn span {
-    background-position: -884px;
+.player-list-body .team.bkn span {
+	background-position: -884px;
 }
 
-.team.nop span {
-    background-position: -936px;
+.player-list-body .team.nop span {
+	background-position: -936px;
 }
 
-.team.nyk span {
-    background-position: -988px;
+.player-list-body .team.nyk span {
+	background-position: -988px;
 }
 
-.team.okc span {
-    background-position: -1040px;
+.player-list-body .team.okc span {
+	background-position: -1040px;
 }
 
-.team.orl span {
-    background-position: -1092px;
+.player-list-body .team.orl span {
+	background-position: -1092px;
 }
 
-.team.phi span {
-    background-position: -1144px;
+.player-list-body .team.phi span {
+	background-position: -1144px;
 }
 
-.team.phx span {
-    background-position: -1196px;
+.player-list-body .team.phx span {
+	background-position: -1196px;
 }
 
-.team.por span {
-    background-position: -1248px;
+.player-list-body .team.por span {
+	background-position: -1248px;
 }
 
-.team.sac span {
-    background-position: -1300px;
+.player-list-body .team.sac span {
+	background-position: -1300px;
 }
 
-.team.sas span {
-    background-position: -1352px;
+.player-list-body .team.sas span {
+	background-position: -1352px;
 }
 
-.team.tor span {
-    background-position: -1404px;
+.player-list-body .team.tor span {
+	background-position: -1404px;
 }
 
-.team.uta span {
-    background-position: -1456px;
+.player-list-body .team.uta span {
+	background-position: -1456px;
 }
 
-.team.wsh span {
-    background-position: -1508px;
+.player-list-body .team.wsh span {
+	background-position: -1508px;
 }
+
+/*--------------------------------------------------------------
+# Type Icons
+--------------------------------------------------------------*/
+
+.player-list-body .type span {
+	background-image: url("../img/type-sprite.png");
+	background-repeat: no-repeat;
+	width: 32px;
+	height: 32px;
+	text-indent: -9999px;
+	display: block;
+}
+
+.player-list-body .type.bronze span {
+	background-position: 4px;
+}
+
+.player-list-body .type.silver span {
+	background-position: -36px;
+}
+
+.player-list-body .type.gold span {
+	background-position: -68px;
+}
+
+.player-list-body .type.elite span {
+	background-position: -100px;
+}
+
+/*--------------------------------------------------------------
+# Lineup Icons
+--------------------------------------------------------------*/
+
+.player-list-body .lineup span {
+	background-image: url("../img/lineup-sprite.png");
+	background-repeat: no-repeat;
+	width: 38px;
+	height: 32px;
+	text-indent: -9999px;
+	display: block;
+}
+
+.player-list-body .lineup.two-way span {
+	background-position: 0 0;
+}
+
+.player-list-body .lineup.small-ball span {
+	background-position: -48px 0;
+}
+
+.player-list-body .lineup.defensive span {
+	background-position: -96px 0;
+}
+
+.player-list-body .lineup.big-man span {
+	background-position: -144px 0;
+}
+
+.player-list-body .lineup.shooting span {
+	background-position: -192px 0;
+}
+
+/*--------------------------------------------------------------
+# Single Player
+--------------------------------------------------------------*/
+
+.player-single-body {
+	padding: 3em;
+}
+
+/*--------------------------------------------------------------
+# Stats Box
+--------------------------------------------------------------*/
+
+.stats {
+	float: left;
+	margin-right: 4%;
+	margin-top: 4%;
+	width: 30.66%;
+	font-size: .875em;
+}
+
+.stats:nth-child(-n+3) {
+	margin-top: 0;
+}
+
+.stats:nth-child(3n+3) {
+	margin-right: 0;
+}
+
+.stats:nth-child(3n+1) {
+	clear: both;
+}
+
+.stats .stats-label {
+	float: left;
+	width: 80%;
+}
+
+.stats .stats-value {
+	float: right;
+	width: 20%;
+	text-align: right;
+}
+
+/*--------------------------------------------------------------
+# Miscellaneous
+--------------------------------------------------------------*/
+
+.hidden {
+	display: none;
+}
+
+.cf,
+.stats .stats-detail {
+	*zoom: 1;
+}
+
+.cf:after,
+.stats .stats-detail:after {
+	clear: both;
+}
+
+.cf:before,
+.stats .stats-detail:before,
+.cf:after,
+.stats .stats-detail:after {
+	content: " "; /* 1 */
+	display: table; /* 2 */
+}
+
+/*--------------------------------------------------------------
+# Loading Spinner
+--------------------------------------------------------------*/
 
 .loader {
 	position: absolute;
@@ -485,53 +877,69 @@ body * {
 	box-sizing: border-box;
 	width: 100%;
 	height: 100%;
-	border-radius: 50%;  
+	border-radius: 50%;
 }
 
 .spinner.one {
 	left: 0%;
 	top: 0%;
 	animation: rotate-one 1s linear infinite;
-	border-bottom: 6px solid #EFEFFA;
+	border-bottom: 6px solid #FFF;
 }
 
 .spinner.two {
 	right: 0%;
 	top: 0%;
 	animation: rotate-two 1s linear infinite;
-	border-right: 6px solid #EFEFFA;
+	border-right: 6px solid #FFF;
 }
 
 .spinner.three {
 	right: 0%;
 	bottom: 0%;
 	animation: rotate-three 1s linear infinite;
-	border-top: 6px solid #EFEFFA;
+	border-top: 6px solid #FFF;
 }
 
+/*--------------------------------------------------------------
+# Animation
+--------------------------------------------------------------*/
+
+/*# sourceMappingURL=styles.css.map */
+
 @keyframes rotate-one {
-  0% {
-    transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
-  }
-  100% {
-    transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
-  }
+
+0% {
+	transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+}
+
+100% {
+	transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+}
+
 }
 
 @keyframes rotate-two {
-  0% {
-    transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
-  }
-  100% {
-    transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
-  }
+
+0% {
+	transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+}
+
+100% {
+	transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+}
+
 }
 
 @keyframes rotate-three {
-  0% {
-    transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
-  }
-  100% {
-    transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
-  }
+
+0% {
+	transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
 }
+
+100% {
+	transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+}
+
+}
+

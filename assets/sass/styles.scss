@@ -1,0 +1,733 @@
+@import "variables";
+
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+# Normalize
+# General
+# Header
+# Tabs
+# Fields
+# Switch Box
+# List Table
+# Team Icons
+# Type Icons
+# Lineup Icons
+# Single Player
+# Stats Box
+# Miscellaneous
+# Loading Spinner
+# Animation
+
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+# Normalize
+--------------------------------------------------------------*/
+@import "normalize";
+
+/*--------------------------------------------------------------
+# General
+--------------------------------------------------------------*/
+
+html, body {
+	height: 100%;
+}
+
+body {
+	font-size: 16px;
+	font-family: 'Rambla', sans-serif;
+	background: $color__black;
+	background-image: radial-gradient( circle farthest-corner at center, $color__body_grad1 0%, $color__body_grad2 100% );
+	color: $color__white;
+	position: relative;
+
+	* {
+		box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+	}
+}
+
+.main .container {
+    padding-right: 330px;
+}
+
+.content {
+	float: left;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+}
+
+.sidebar {
+	position: fixed;
+	right: 0;
+	height: 100%;
+    width: 330px;
+    background-color: $color__white;
+    color: $color__black;
+    overflow-y: auto;
+}
+
+.inner {
+	height: 100%;
+	min-height: 100%;
+}
+
+
+/*--------------------------------------------------------------
+# Header
+--------------------------------------------------------------*/
+.header {
+	width: 100%;
+	height: 48px;
+	line-height: 48px;
+	bottom: 0;
+	font-size: .875em;
+	background: $color__main;
+	padding: 0 1.25em;
+	height: 100%;
+}
+
+.header a {
+	color: $color__white;
+	text-decoration: none;
+	font-weight: 700;
+}
+
+/*--------------------------------------------------------------
+# Tabs
+--------------------------------------------------------------*/
+
+.tab-nav {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	clear: both;
+	overflow: hidden;
+
+	li {
+
+		float: left;
+		width: 33.33%;
+
+		a {
+			text-align: center;
+			line-height: 48px;
+			height: 48px;
+			display: block;
+			cursor: pointer;
+		}
+
+		&:not(.active) {
+			background: $color__main;
+			color: $color__white;
+			box-shadow: -1px 0 0 rgba( 255, 255, 255, .35 );
+		}
+	}
+}
+
+
+.tab-content {
+
+	height: 100%;
+	display: none;
+	visibility: hidden;
+
+	&.active {
+		display: block;
+		visibility: visible;
+	}
+	.tab-inner {
+		margin: 1em 1.5em;
+		overflow: visible;
+		height: 100%;
+	}
+}
+
+
+/*--------------------------------------------------------------
+# Fields
+--------------------------------------------------------------*/
+
+.field {
+
+	padding: 0 0 .5em 0;
+	overflow: hidden;
+	font-size: .875em;
+
+	input[type="text"],
+	input[type="number"],
+	select {
+		height: 28px;
+		line-height: 28px;
+		padding-left: 5px;
+		padding-right: 5px;
+	}
+
+	.two-cols,
+	input[type="text"],
+	select {
+		width: 70%;
+	}
+
+	.two-cols {
+		overflow: hidden;
+	}
+
+	label {
+		float: left;
+		width: 30%;
+		line-height: 30px;
+		height: 30px;
+	}
+
+	input[type="number"] {
+		width: 48%;
+	}
+
+	.two-cols input:first-child {
+		float: left;
+	}
+
+	.two-cols input:last-child {
+		float: right;
+	}
+
+	input[type="submit"],
+	button,
+	.button {
+		float: right;
+		box-shadow: none;
+		border: 0;
+		background: $color__main;
+		color: $color__white;
+		padding: .75em 1.5em;
+		cursor: pointer;
+		margin-top: .5em;
+
+		&:hover, &:focus {
+			background: $color__secondary;
+			transition: all .2s ease-in-out;
+			-moz-transition: all .2s ease-in-out;
+			-webkit-transition: all .2s ease-in-out; 
+		}
+	}
+}
+
+/*--------------------------------------------------------------
+# Switch Box
+--------------------------------------------------------------*/
+
+#switch {
+	overflow: hidden;
+}
+.switch-box {
+	width: 48%;
+	float: left;
+	margin: 0 0 10px 0;
+
+	&:nth-child(even) {
+		float: right;
+	}
+
+	abbr {
+		display: inline-block;
+		vertical-align: middle;
+		width: 40px;
+		border-bottom: 0;
+	}
+}
+
+.switch {
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
+	width: 80px;
+	height: 30px;
+	border-radius: 18px;
+	cursor: pointer;
+	padding: 0;
+	background: $color__white;
+}
+
+.switch-input {
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+}
+
+.switch-label {
+	position: relative;
+	display: block;
+	height: inherit;
+	text-transform: uppercase;
+	border-radius: inherit;
+	background: $color__white;
+	font-size: 12px;
+	font-weight: 400;
+	letter-spacing: 1px;
+	border: solid 2px $color__gray;
+
+	&:before, &:after {
+		position: absolute;
+		top: 50%;
+		margin-top: -.5em;
+		line-height: 1;
+		-webkit-transition: inherit;
+		-moz-transition: inherit;
+		-o-transition: inherit;
+		transition: inherit;
+	}
+
+	&:before {
+		content: attr(data-off);
+		right: 11px;
+		color: $color__gray;
+	}
+
+	&:after {
+		content: attr(data-on);
+		left: 11px;
+		opacity: 0;
+		color: $color__tertiary;
+	}
+}
+
+.switch-input:checked ~ .switch-label {
+	background: $color__white;
+	border-color: $color__tertiary;
+
+	&:before {
+		opacity: 0;
+	}
+
+	&:after {
+		opacity: 1;
+	}
+}
+
+.switch-handle {
+	position: absolute;
+	border-radius: 100%;
+	top: 50%;
+	margin-top: -11px;
+	left: 6px;
+	background: $color__gray;
+	width: 22px;
+	height: 22px;
+
+	&:before {
+		content: "";
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin: -6px 0 0 -6px;
+		width: 12px;
+		height: 12px;
+		border-radius: 6px;
+		background: $color__white;
+	}
+}
+
+.switch-input:checked ~ .switch-handle {
+	left: 52px;
+	background: $color__tertiary;
+}
+
+.switch-label, .switch-handle {
+	transition: All 0.3s ease;
+	-webkit-transition: All 0.3s ease;
+	-moz-transition: All 0.3s ease;
+	-o-transition: All 0.3s ease;
+}
+
+/*--------------------------------------------------------------
+# List Table
+--------------------------------------------------------------*/
+
+#player-list {
+
+	border-spacing: 0;
+	width: 100%;
+
+}
+
+.player-list-head {
+
+	tr {
+		background: rgba( 0, 0, 0, .65 );
+	}
+
+	td {
+		padding: 1em 1.25em;
+	}
+
+}
+
+.player-list-body {
+
+	td {
+		padding: 0 1.25em;
+		line-height: 40px;
+	}
+
+	tr {
+		&:nth-child(even) td {
+			background: rgba( 255, 255, 255, .065 );
+		}
+		&:hover td {
+			background: $color__main;
+			cursor: pointer;
+		}
+	}
+
+}
+
+
+/*--------------------------------------------------------------
+# Team Icons
+--------------------------------------------------------------*/
+
+.player-list-body .team {
+		span {
+		background-image: url( "../img/team-sprite.png" );
+		width: 42px;
+		height: 42px;
+		text-indent: -9999px;
+		display: block;
+	}
+
+	&.atl span {
+	    background-position: 0 0;
+	}
+
+	&.bos span {
+	    background-position: -52px;
+	}
+
+	&.cha span {
+	    background-position: -104px;
+	}
+
+	&.chi span {
+	    background-position: -156px;
+	}
+
+	&.cle span {
+	    background-position: -208px;
+	}
+
+	&.dal span {
+	    background-position: -260px;
+	}
+
+	&.den span {
+	    background-position: -312px;
+	}
+
+	&.det span {
+	    background-position: -364px;
+	}
+
+	&.gsw span {
+	    background-position: -416px;
+	}
+
+	&.hou span {
+	    background-position: -468px;
+	}
+
+	&.ind span {
+	    background-position: -520px;
+	}
+
+	&.lac span {
+	    background-position: -572px;
+	}
+
+	&.lal span {
+	    background-position: -624px;
+	}
+
+	&.mem span {
+	    background-position: -676px;
+	}
+
+	&.mia span {
+	    background-position: -728px;
+	}
+
+	&.mil span {
+	    background-position: -780px;
+	}
+
+	&.min span {
+	    background-position: -832px;
+	}
+
+	&.bkn span {
+	    background-position: -884px;
+	}
+
+	&.nop span {
+	    background-position: -936px;
+	}
+
+	&.nyk span {
+	    background-position: -988px;
+	}
+
+	&.okc span {
+	    background-position: -1040px;
+	}
+
+	&.orl span {
+	    background-position: -1092px;
+	}
+
+	&.phi span {
+	    background-position: -1144px;
+	}
+
+	&.phx span {
+	    background-position: -1196px;
+	}
+
+	&.por span {
+	    background-position: -1248px;
+	}
+
+	&.sac span {
+	    background-position: -1300px;
+	}
+
+	&.sas span {
+	    background-position: -1352px;
+	}
+
+	&.tor span {
+	    background-position: -1404px;
+	}
+
+	&.uta span {
+	    background-position: -1456px;
+	}
+
+	&.wsh span {
+	    background-position: -1508px;
+	}
+}
+
+
+/*--------------------------------------------------------------
+# Type Icons
+--------------------------------------------------------------*/
+
+.player-list-body .type {
+	span {
+		background-image: url( "../img/type-sprite.png" );
+		background-repeat: no-repeat;
+		width: 32px;
+		height: 32px;
+		text-indent: -9999px;
+		display: block;
+	}
+
+	&.bronze span {
+		background-position: 4px;
+	}
+
+	&.silver span {
+		background-position: -36px;
+	}
+
+	&.gold span {
+		background-position: -68px;
+	}
+
+	&.elite span {
+		background-position: -100px;
+	}
+}
+
+/*--------------------------------------------------------------
+# Lineup Icons
+--------------------------------------------------------------*/
+
+.player-list-body .lineup {
+	span {
+		background-image: url( "../img/lineup-sprite.png" );
+		background-repeat: no-repeat;
+		width: 38px;
+		height: 32px;
+		text-indent: -9999px;
+		display: block;
+	}
+
+	&.two-way span {
+		background-position: 0 0;
+	}
+
+	&.small-ball span {
+		background-position: -48px 0;
+	}
+
+	&.defensive span {
+		background-position: -96px 0;
+	}
+
+	&.big-man span {
+		background-position: -144px 0;
+	}
+
+	&.shooting span {
+		background-position: -192px 0;
+	}
+}
+
+/*--------------------------------------------------------------
+# Single Player
+--------------------------------------------------------------*/
+.player-single-body {
+	padding: 3em;
+}
+
+/*--------------------------------------------------------------
+# Stats Box
+--------------------------------------------------------------*/
+.stats {
+	float: left;
+	margin-right: 4%;
+	margin-top: 4%;
+	width: 30.66%;
+	font-size: .875em;
+
+	&:nth-child(-n+3) {
+		margin-top: 0;
+	}
+
+	&:nth-child(3n+3) {
+		margin-right: 0;
+	}
+
+	&:nth-child(3n+1) {
+		clear: both;
+	}
+
+	.stats-label {
+		float: left;
+		width: 80%;
+	}
+
+	.stats-value {
+		float: right;
+		width: 20%;
+		text-align: right;
+	}
+
+	.stats-detail {
+		@extend .cf;
+	}
+}
+
+/*--------------------------------------------------------------
+# Miscellaneous
+--------------------------------------------------------------*/
+
+.hidden {
+	display: none;
+}
+
+.cf {
+
+	*zoom: 1;
+
+	&:after {
+		clear: both;
+	}
+
+	&:before, &:after {
+		content: " "; /* 1 */
+    	display: table; /* 2 */
+	}
+}
+
+/*--------------------------------------------------------------
+# Loading Spinner
+--------------------------------------------------------------*/
+
+.loader {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	perspective: 800px;
+	margin-left: -229px;
+	margin-top: -32px;
+}
+
+.spinner {
+	position: absolute;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+
+	&.one {
+		left: 0%;
+		top: 0%;
+		animation: rotate-one 1s linear infinite;
+		border-bottom: 6px solid $color__white;
+	}
+
+	&.two {
+		right: 0%;
+		top: 0%;
+		animation: rotate-two 1s linear infinite;
+		border-right: 6px solid $color__white;
+	}
+
+	&.three {
+		right: 0%;
+		bottom: 0%;
+		animation: rotate-three 1s linear infinite;
+		border-top: 6px solid $color__white;
+	}
+}
+
+
+/*--------------------------------------------------------------
+# Animation
+--------------------------------------------------------------*/
+
+@keyframes rotate-one {
+	0% {
+		transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+	}
+	100% {
+		transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+	}
+}
+
+@keyframes rotate-two {
+	0% {
+		transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+	}
+	100% {
+		transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+	}
+}
+
+@keyframes rotate-three {
+	0% {
+		transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+	}
+	100% {
+		transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+	}
+}
