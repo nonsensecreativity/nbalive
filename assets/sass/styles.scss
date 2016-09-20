@@ -36,7 +36,7 @@ html, body {
 
 body {
 	font-size: 16px;
-	font-family: 'Rambla', sans-serif;
+	font-family: 'Source Sans Pro', sans-serif;
 	background: $color__black;
 	background-image: radial-gradient( circle farthest-corner at center, $color__body_grad1 0%, $color__body_grad2 100% );
 	color: $color__white;
@@ -292,13 +292,13 @@ body {
 		content: attr(data-on);
 		left: 11px;
 		opacity: 0;
-		color: $color__tertiary;
+		color: $color__elite;
 	}
 }
 
 .switch-input:checked ~ .switch-label {
 	background: $color__white;
-	border-color: $color__tertiary;
+	border-color: $color__elite;
 
 	&:before {
 		opacity: 0;
@@ -334,7 +334,7 @@ body {
 
 .switch-input:checked ~ .switch-handle {
 	left: 52px;
-	background: $color__tertiary;
+	background: $color__elite;
 }
 
 .switch-label, .switch-handle {
@@ -391,8 +391,8 @@ body {
 # Team Icons
 --------------------------------------------------------------*/
 
-.player-list-body .team {
-		span {
+.team {
+	span:not(.stats-label) {
 		background-image: url( "../img/team-sprite.png" );
 		width: 42px;
 		height: 42px;
@@ -400,123 +400,123 @@ body {
 		display: block;
 	}
 
-	&.atl span {
+	&.atl span, .atl {
 	    background-position: 0 0;
 	}
 
-	&.bos span {
+	&.bos span, .bos {
 	    background-position: -52px;
 	}
 
-	&.cha span {
+	&.cha span, .cha {
 	    background-position: -104px;
 	}
 
-	&.chi span {
+	&.chi span, .chi {
 	    background-position: -156px;
 	}
 
-	&.cle span {
+	&.cle span, .cle {
 	    background-position: -208px;
 	}
 
-	&.dal span {
+	&.dal span, .dal {
 	    background-position: -260px;
 	}
 
-	&.den span {
+	&.den span, .den {
 	    background-position: -312px;
 	}
 
-	&.det span {
+	&.det span, .det {
 	    background-position: -364px;
 	}
 
-	&.gsw span {
+	&.gsw span, .gsw {
 	    background-position: -416px;
 	}
 
-	&.hou span {
+	&.hou span, .hou {
 	    background-position: -468px;
 	}
 
-	&.ind span {
+	&.ind span, .ind {
 	    background-position: -520px;
 	}
 
-	&.lac span {
+	&.lac span, .lac {
 	    background-position: -572px;
 	}
 
-	&.lal span {
+	&.lal span, .lal {
 	    background-position: -624px;
 	}
 
-	&.mem span {
+	&.mem span, .mem {
 	    background-position: -676px;
 	}
 
-	&.mia span {
+	&.mia span, .mia {
 	    background-position: -728px;
 	}
 
-	&.mil span {
+	&.mil span, .mil {
 	    background-position: -780px;
 	}
 
-	&.min span {
+	&.min span, .min {
 	    background-position: -832px;
 	}
 
-	&.bkn span {
+	&.bkn span, .hou {
 	    background-position: -884px;
 	}
 
-	&.nop span {
+	&.nop span, .nop  {
 	    background-position: -936px;
 	}
 
-	&.nyk span {
+	&.nyk span, .nyk {
 	    background-position: -988px;
 	}
 
-	&.okc span {
+	&.okc span, .okc {
 	    background-position: -1040px;
 	}
 
-	&.orl span {
+	&.orl span, .orl {
 	    background-position: -1092px;
 	}
 
-	&.phi span {
+	&.phi span, .phi {
 	    background-position: -1144px;
 	}
 
-	&.phx span {
+	&.phx span, .phx {
 	    background-position: -1196px;
 	}
 
-	&.por span {
+	&.por span, .por {
 	    background-position: -1248px;
 	}
 
-	&.sac span {
+	&.sac span, .sac {
 	    background-position: -1300px;
 	}
 
-	&.sas span {
+	&.sas span, .sas {
 	    background-position: -1352px;
 	}
 
-	&.tor span {
+	&.tor span, .tor {
 	    background-position: -1404px;
 	}
 
-	&.uta span {
+	&.uta span, .uta {
 	    background-position: -1456px;
 	}
 
-	&.wsh span {
+	&.wsh span, .wsh {
 	    background-position: -1508px;
 	}
 }
@@ -591,8 +591,128 @@ body {
 /*--------------------------------------------------------------
 # Single Player
 --------------------------------------------------------------*/
-.player-single-body {
+#player-single {
 	padding: 3em;
+	@extend .cf;
+}
+
+.player-single-head {
+	@extend .cf;
+	position: relative;
+	padding-top: 1em;
+	padding-bottom: 3em;
+	margin-bottom: 3em;
+
+	border-bottom: 1px dashed rgba( 255, 255, 255, .5 );
+	.ovr {
+		float: right;
+		font-size: 80px;
+		font-weight: bold;
+		text-shadow: -2px 2px 0 rgba( 0, 0, 0, .6 );
+		line-height: 64px;
+
+		&.elite {
+			color: $color__elite;
+		}
+
+		&.gold {
+			color: $color__gold;
+		}
+
+		&.silver {
+			color: $color__silver;
+		}
+
+		&.bronze {
+			color: $color__bronze;
+		}
+	}
+
+	.name {
+		float: left;
+		text-transform: uppercase;
+		font-size: 32px;
+		line-height: 64px;
+		font-weight: 700;
+		margin: 0 0 0 10px;
+		display: inline-block;
+	}
+
+	.desc {
+		display: inline-block;
+		margin-left: 55px;
+
+		.stats-label {
+			display: block;
+			color: rgba( 255, 255, 255, .8 );
+			text-transform: uppercase;
+			margin-bottom: 10px;
+		}
+
+		.stats-value {
+			font-size: 1.5em;
+			line-height: 1;
+		}
+
+		div {
+			float: left;
+			text-align: center;
+			margin-right: 30px;
+			&:last-of-type {
+				margin-right: 0;
+			}
+		}
+		.team .stats-label {
+			margin-bottom: 0;
+		}
+	}
+
+	.pos-lineup {
+		position: relative;
+		float: left;
+		margin-top: 10px;
+		.position {
+			position: absolute;
+			font-weight: bold;
+			height: 45px;
+			width: 52px;
+			line-height: 45px;
+			text-align: center;
+		}
+
+		.lineup {
+			height: 44px;
+    		width: 52px;
+			background-image: url( "../img/lineup-big-sprite.png" );
+			background-repeat: no-repeat;
+			text-indent: -9999px;
+
+			&.two-way {
+				background-position: 0 0;
+			}
+
+			&.small-ball {
+				background-position: -62px 0;
+			}
+
+			&.defensive {
+				background-position: -124px 0;
+			}
+
+			&.big-man {
+				background-position: -186px 0;
+			}
+
+			&.shooting {
+				background-position: -248px 0;
+			}
+		}
+	}
+
+}
+
+.player-single-body {
+	@extend .cf;
 }
 
 /*--------------------------------------------------------------
@@ -600,26 +720,29 @@ body {
 --------------------------------------------------------------*/
 .stats {
 	float: left;
+	font-size: .875em;
+
 	margin-right: 4%;
 	margin-top: 4%;
 	width: 30.66%;
-	font-size: .875em;
+	&:not(.hidden) {
+		&:nth-of-type(-n+3) {
+			margin-top: 0;
+		}
 
-	&:nth-child(-n+3) {
-		margin-top: 0;
-	}
+		&:nth-of-type(3n+3) {
+			margin-right: 0;
+		}
 
-	&:nth-child(3n+3) {
-		margin-right: 0;
-	}
-
-	&:nth-child(3n+1) {
-		clear: both;
+		&:nth-of-type(3n+1) {
+			clear: both;
+		}
 	}
 
 	.stats-label {
 		float: left;
 		width: 80%;
+		color: rgba( 255, 255, 255, .8 );
 	}
 
 	.stats-value {
@@ -630,6 +753,33 @@ body {
 
 	.stats-detail {
 		@extend .cf;
+	}
+
+	.stats-bar {
+		height: 6px;
+		width: 100%;
+		background: rgba( 255, 255, 255, .25 );
+		border-radius: 20px;
+		-moz-border-radius: 20px;
+		-webkit-border-radius: 20px;
+		overflow: hidden;
+		margin-top: 8px;
+		.stats-bar-value {
+			background: $color__progress;
+			height: 100%;
+		}
+	}
+
+	&.ability {
+
+		.stats-label, .stats-value {
+			color: $color__white;
+			font-weight: bold;
+		}
+
+		.stats-bar .stats-bar-value {
+			background: $color__progress-abl;
+		}
 	}
 }
 

@@ -313,6 +313,18 @@ window.nba = ( function() {
 
 
 	NBA.requestData = function( qStr ) {
+
+		var list  = document.getElementById( 'player-list' ),
+			spin  = document.getElementById( 'loader' );
+
+		if( list ) {
+			NBA.addClass( list, 'hidden' );
+		}
+
+		if( spin ) {
+			NBA.removeClass( spin, 'hidden' );
+		}
+
 		var query = new google.visualization.Query( SHEET_URL );
 			qStr  = qStr ? qStr : 'SELECT A, B, C, G, I, M';
 
@@ -339,7 +351,7 @@ window.nba = ( function() {
 	NBA.buildTable = function( data ) {
 
 		var div, spin, child, key, i, j, lenI, lenJ, table, thead, tbody, theadInner = '', tbodyInner = '',
-			currentRow, theRow;
+			currentRow, currentVal, theRow;
 
 		table = document.createElement( 'table' );
 		table.setAttribute( 'id', 'player-list' );
@@ -363,18 +375,19 @@ window.nba = ( function() {
 			for( j = 0, lenJ = data.rows[ i ].c.length; j < lenJ; j++ ) {
 
 				currentRow  = data.cols[ j ].label.toString().toLowerCase().replace( ' ', '-' );
+				currentVal  = ( null !== data.rows[ i ].c[ j ] ) ? data.rows[ i ].c[ j ].v : '';
 				tbodyInner += '<td class="';
 				tbodyInner +=  currentRow;
 
-				if( null !== data.rows[ i ].c[ j ] ) {
+				if( currentVal ) {
 
 					if( NBA.hasClassRow( currentRow ) ) {
-						tbodyInner += ' ' + data.rows[ i ].c[ j ].v.toString().toLowerCase().replace( ' ', '-' ) + '">';
+						tbodyInner += ' ' + currentVal.toString().toLowerCase().replace( ' ', '-' ) + '">';
 					} else {
 						tbodyInner += '">';
 					}
 
-					tbodyInner += '<span>' + data.rows[ i ].c[ j ].v + '</span>';
+					tbodyInner += '<span>' + currentVal + '</span>';
 
 				} else {
 
@@ -408,46 +421,95 @@ window.nba = ( function() {
 	};
 
 	NBA.buildTableSingle = function( data ) {
-		var div, spin, i, len, className, list, table, thead, tbody, theadInner = '', tbodyInner = '', currentRow, skip = [];
+		var div, spin, i, len, className, 
+			table, thead, tbody, 
+			tbodyInner = '', ck,
+			currentRow, currentVal, skip = [],
+			name, ovr, pos, ht, wt, team, lineup;
 
-		list  = document.getElementById( 'player-list' );
 		spin  = document.getElementById( 'loader' );
-
-		if( list ) {
-			NBA.addClass( list, 'hidden' );
-		}
-
-		if( list ) {
-			NBA.removeClass( spin, 'hidden' );
-		}
-
 		div   = document.querySelector( '.content .inner' );
-
-		console.log( thead, theadInner );
 		
 		table = document.createElement( 'div' );
 		table.setAttribute( 'id', 'player-single' );
 
+		thead = document.createElement( 'div' );
+		thead.className = 'player-single-head';
+
 		tbody = document.createElement( 'div' );
 		tbody.className = 'player-single-body';
 
-		//for( key in data.cols ) {
-			//thead = document.createElement( 'div' );
-			//thead.className = 'player-single-head';
-			//theadInner += '<span>' + data.cols[ key ].label + '</span>';
-		//}
-
-		//thead.innerHTML = '<tr>' + theadInner + '</tr>';
-
-		console.log( data.rows );
 
 		if( data.rows ) {
 
-			for( i = ABILITIES.length, len = data.rows[0].c.length; i < len; i ++ ) {
+			for( i = 0, len = data.rows[ 0 ].c.length; i < len; i ++ ) {
 
-				currentRow  = data.cols[ i ].label.toString().replace( ' ', '-' );
+				currentRow = data.cols[ i ].label.toString().replace( ' ', '-' );
+				currentVal = ( null !== data.rows[ 0 ].c[ i ]  ) ? data.rows[ 0 ].c[ i ].v  : '';
 
 				if( !STATS_ABBR[ currentRow ] ) {
+
+					switch ( currentRow.toLowerCase() ) {
+
+						case 'player-name':
+
+							name = '<h2 class="name">' + currentVal + '</h2>';
+
+						break;
+
+						case 'game-ovr':
+
+							var color = 'bronze';
+
+							if( parseInt( currentVal ) > 83 ) {
+								color = 'elite';
+							} else if( parseInt( currentVal ) > 72 ) {
+								color = 'gold';
+							} else if( parseInt( currentVal ) > 62 ) {
+								color = 'silver';
+							}
+
+							ovr = '<div class="ovr ' + data.rows[ 0 ].c[ 6 ].v.toString().toLowerCase() + '">' + currentVal + '</div>';
+
+						break;
+
+						case 'position':
+
+							pos = '<div class="position">' + currentVal + '</div>';
+							
+						break;
+
+						case 'lineup':
+
+							lineup = '<div class="lineup ' + currentVal.toString().toLowerCase().replace( ' ', '-' ) + '">' + currentVal + '</div>';
+
+						break;
+
+						case 'team':
+
+							team = '<div class="team"><span class="stats-label">Team</span>' + 
+								   '<span class="stats-value ' + currentVal.toString().toLowerCase() + '"></span></div>';
+
+						break;
+
+						case 'wt':
+
+							wt = '<div class="weight"><span class="stats-label">Weight</span>' + 
+								 '<span class="stats-value">' + currentVal + '</span></div>';
+
+						break;
+
+						case 'ht':
+
+							ht = '<div class="height"><span class="stats-label">Height</span>' + 
+								 '<span class="stats-value">' + currentVal + '</span></div>';
+
+						break;
+
+
+						default:
+						continue;
+					}
 
 				} else {
 
@@ -455,25 +517,36 @@ window.nba = ( function() {
 						skip.push( currentRow );
 					} else {
 
+						className = '';
+
 						if( ABILITIES.indexOf( currentRow ) > -1 ) {
-							className = ' ability';
-						} else {
-							className = '';
+							className += ' ability';
+						}
+
+						ck = JSON.parse( cookie.get( EXC_COOKIE ) );
+
+						if( currentRow in ck === true ) {
+							className += ' hidden';
 						}
 
 						tbodyInner += '<div class="stats' + className + '">';
 						tbodyInner += '<div class="stats-detail"><div class="stats-label">' + STATS_ABBR[ currentRow ] + '</div>';
-						tbodyInner += '<div class="stats-value">' + ( data.rows[ 0].c[ i ].v ) + '</div></div>';
+						tbodyInner += '<div class="stats-value">' + ( currentVal ) + '</div></div>';
 						tbodyInner += '<div class="stats-bar">';
-						tbodyInner += '<div class="stats-bar-value" style="width:' + ( data.rows[ 0 ].c[ i ].v ) + '%;"></div>';
+						tbodyInner += '<div class="stats-bar-value" style="width:' + ( currentVal ) + '%;"></div>';
 						tbodyInner += '</div></div>';
 					}
 					
 				}
 			}
+
+
+			thead.innerHTML = '<div class="pos-lineup">' + pos + lineup + '</div>' +
+								name + '<div class="desc">' + wt + ht + team + '</div>' + ovr;
 		}
 
 		tbody.innerHTML = tbodyInner;
+		table.appendChild( thead );
 		table.appendChild( tbody );
 		div.appendChild( table );
 
