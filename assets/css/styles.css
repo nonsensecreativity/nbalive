@@ -324,7 +324,7 @@ body * {
 
 .tab-nav li {
 	float: left;
-	width: 33.33%;
+	width: 50%;
 }
 
 .tab-nav li a {
@@ -365,7 +365,7 @@ body * {
 .field {
 	padding: 0 0 .5em 0;
 	overflow: hidden;
-	font-size: .875em;
+	font-size: 13px;
 }
 
 .field input[type="text"],
@@ -556,10 +556,10 @@ body * {
 
 .switch-label,
 .switch-handle {
-	transition: All 0.3s ease;
-	-webkit-transition: All 0.3s ease;
-	-moz-transition: All 0.3s ease;
-	-o-transition: All 0.3s ease;
+	transition: all 0.3s ease;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
 }
 
 /*--------------------------------------------------------------
@@ -575,22 +575,113 @@ body * {
 	background: rgba(0, 0, 0, 0.65);
 }
 
-.player-list-head td {
+.player-list-head th {
 	padding: 1em 1.25em;
+}
+
+.player-list-head th:first-child {
+	text-align: left;
 }
 
 .player-list-body td {
 	padding: 0 1.25em;
-	line-height: 40px;
+	line-height: 46px;
 }
 
-.player-list-body tr:nth-child(even) td {
+.player-list-body tr:nth-child(4n+3) td {
 	background: rgba(255, 255, 255, 0.065);
 }
 
 .player-list-body tr:hover td {
 	background: #003D7B;
 	cursor: pointer;
+}
+
+.player-list-body tr td:not(.player-name):not(.actions) {
+	text-align: center;
+}
+
+.player-list-body tr td:not(.player-name):not(.actions) > span {
+	margin: 0 auto;
+}
+
+.player-list-body tr.data {
+	background: rgba(0, 0, 0, 0.45);
+}
+
+.player-list-body tr.data:hover td {
+	background: rgba(0, 0, 0, 0.45);
+}
+
+.player-list-body tr.data td {
+	padding: 2em !important;
+	line-height: 1;
+}
+
+.player-list-body tr.data td .stats-label {
+	text-align: left !important;
+}
+
+.player-list-body .actions > a {
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	border: 2px solid #FFF;
+	line-height: 28px;
+	margin-right: 10px !important;
+	margin-top: 9px !important;
+	margin-bottom: -9px !important;
+	text-align: center;
+}
+
+.player-list-body .actions > a:last-child {
+	margin-right: 0 !important;
+}
+
+.player-list-body .actions > a:hover {
+	color: #FFDE00;
+	border-color: #FFDE00;
+}
+
+.compares .switch {
+	width: 70px;
+}
+
+.compares .switch,
+.compares .switch-label,
+.compares .switch-input:checked ~ .switch-label {
+	background: transparent;
+}
+
+.compares .switch-input:checked ~ .switch-label {
+	border-color: #FFDE00;
+}
+
+.compares .switch-input:checked ~ .switch-label:after {
+	color: #FFDE00;
+}
+
+.compares .switch-handle {
+	position: absolute;
+	border-radius: 100%;
+	top: 50%;
+	margin-top: -9px;
+	left: 6px;
+	background: #95A5A6;
+	width: 18px;
+	height: 18px;
+}
+
+.compares .switch-handle:before {
+	display: none;
+}
+
+.compares .switch-input:checked ~ .switch-handle {
+	left: 46px;
+	background: #FFDE00;
 }
 
 /*--------------------------------------------------------------
@@ -880,14 +971,13 @@ body * {
 }
 
 .player-single-head .desc .stats-value {
-	font-size: 1.5em;
 	line-height: 1;
 }
 
 .player-single-head .desc div {
 	float: left;
 	text-align: center;
-	margin-right: 30px;
+	margin-right: 2.5em;
 }
 
 .player-single-head .desc div:last-of-type {
@@ -1008,7 +1098,8 @@ body * {
 --------------------------------------------------------------*/
 
 .hidden {
-	display: none;
+	display: none !important;
+	visibility: hidden !important;
 }
 
 .cf,
@@ -1089,6 +1180,43 @@ body * {
 /*--------------------------------------------------------------
 # Animation
 --------------------------------------------------------------*/
+
+@font-face {
+	font-family: 'nbalive';
+	src: url("../fonts/nbalive.eot?os5d8m");
+	src: url("../fonts/nbalive.eot?os5d8m#iefix") format("embedded-opentype"), url("../fonts/nbalive.ttf?os5d8m") format("truetype"), url("../fonts/nbalive.woff?os5d8m") format("woff"), url("../fonts/nbalive.svg?os5d8m#nbalive") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"],
+[class*=" icon-"] { /* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'nbalive' !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1; /* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-eye:before {
+	content: "\e900";
+}
+
+.icon-compare:before {
+	content: "\e902";
+}
+
+.icon-chevron-down:before {
+	content: "\e903";
+}
+
+.icon-chevron-up:before {
+	content: "\e904";
+}
 
 /*# sourceMappingURL=styles.css.map */
 

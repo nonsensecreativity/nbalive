@@ -110,7 +110,7 @@ body {
 	li {
 
 		float: left;
-		width: 33.33%;
+		width: 50%;
 
 		a {
 			text-align: center;
@@ -155,7 +155,7 @@ body {
 
 	padding: 0 0 .5em 0;
 	overflow: hidden;
-	font-size: .875em;
+	font-size: 13px;
 
 	input[type="text"],
 	input[type="number"],
@@ -223,6 +223,7 @@ body {
 #switch {
 	overflow: hidden;
 }
+
 .switch-box {
 	width: 48%;
 	float: left;
@@ -338,10 +339,10 @@ body {
 }
 
 .switch-label, .switch-handle {
-	transition: All 0.3s ease;
-	-webkit-transition: All 0.3s ease;
-	-moz-transition: All 0.3s ease;
-	-o-transition: All 0.3s ease;
+	transition: all 0.3s ease;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
 }
 
 /*--------------------------------------------------------------
@@ -361,8 +362,11 @@ body {
 		background: rgba( 0, 0, 0, .65 );
 	}
 
-	td {
+	th {
 		padding: 1em 1.25em;
+		&:first-child {
+			text-align: left;
+		}
 	}
 
 }
@@ -371,21 +375,103 @@ body {
 
 	td {
 		padding: 0 1.25em;
-		line-height: 40px;
+		line-height: 46px;
 	}
 
 	tr {
-		&:nth-child(even) td {
+		&:nth-child(4n+3) td {
 			background: rgba( 255, 255, 255, .065 );
 		}
 		&:hover td {
 			background: $color__main;
 			cursor: pointer;
 		}
+
+		td:not(.player-name):not(.actions) {
+			text-align: center;
+			> span {
+				margin: 0 auto;
+			}
+		}
+	}
+
+	tr.data {
+		background: rgba( 0, 0, 0, .45 );
+		&:hover td {
+			background: rgba( 0, 0, 0, .45 );
+		}
+		td {
+			padding: 2em !important;
+			line-height: 1;
+			.stats-label {
+				text-align: left !important;
+			}
+		}
+	}
+
+	.actions > a {
+		display: inline-block;
+		width: 28px;
+		height: 28px;
+		border-radius: 20px;
+		-moz-border-radius: 20px;
+		-webkit-border-radius: 20px;
+		border: 2px solid $color__white;
+		line-height: 28px;
+		margin-right: 10px !important;
+		margin-top: 9px !important;
+		margin-bottom: -9px !important;
+		text-align: center;
+		&:last-child {
+			margin-right: 0 !important;
+		}
+
+		&:hover {
+			color: $color__gold;
+			border-color: $color__gold;
+		}
+	}
+}
+
+.compares {
+
+	.switch {
+		width: 70px;
+	}
+
+	.switch, .switch-label, .switch-input:checked ~ .switch-label {
+		background: transparent;
+	}
+
+	.switch-input:checked ~ .switch-label {
+
+		border-color: $color__gold;
+
+		&:after {
+			color: $color__gold;
+		}
+	}
+
+	.switch-handle {
+		position: absolute;
+		border-radius: 100%;
+		top: 50%;
+		margin-top: -9px;
+		left: 6px;
+		background: $color__gray;
+		width: 18px;
+		height: 18px;
+		&:before {
+			display: none;
+		}
+	}
+
+	.switch-input:checked ~ .switch-handle {
+		left: 46px;
+		background: $color__gold;
 	}
 
 }
-
 
 /*--------------------------------------------------------------
 # Team Icons
@@ -650,14 +736,13 @@ body {
 		}
 
 		.stats-value {
-			font-size: 1.5em;
 			line-height: 1;
 		}
 
 		div {
 			float: left;
 			text-align: center;
-			margin-right: 30px;
+			margin-right: 2.5em;
 			&:last-of-type {
 				margin-right: 0;
 			}
@@ -788,7 +873,8 @@ body {
 --------------------------------------------------------------*/
 
 .hidden {
-	display: none;
+	display: none !important;
+	visibility: hidden !important;
 }
 
 .cf {
@@ -880,4 +966,46 @@ body {
 	100% {
 		transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
 	}
+}
+
+@font-face {
+  font-family: 'nbalive';
+  src:  url('../fonts/nbalive.eot?os5d8m');
+  src:  url('../fonts/nbalive.eot?os5d8m#iefix') format('embedded-opentype'),
+    url('../fonts/nbalive.ttf?os5d8m') format('truetype'),
+    url('../fonts/nbalive.woff?os5d8m') format('woff'),
+    url('../fonts/nbalive.svg?os5d8m#nbalive') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'nbalive' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-eye:before {
+  content: "\e900";
+}
+
+.icon-compare:before {
+  content: "\e902";
+}
+
+.icon-chevron-down:before {
+  content: "\e903";
+}
+
+.icon-chevron-up:before {
+  content: "\e904";
 }

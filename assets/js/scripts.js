@@ -100,7 +100,8 @@ window.nba = ( function() {
 			pas       : 'S',
 		},
 		EXC_COOKIE  = 'nbalive_excl_stats',
-		//COMP_COOKIE = 'nbalive_compare',
+		COM_COOKIE  = 'nbalive_compare',
+		QRY_COOKIE  = 'nbalive_query',
 		ABILITIES = [
 			'SPD', 'DRI', 'TPT', 'SHT', 'DEF', 'PAS'
 		],
@@ -108,14 +109,21 @@ window.nba = ( function() {
 
 	NBA.init = function() {
 
-		var nba_cookie = cookie.get( EXC_COOKIE );
+		var exc_cookie = cookie.get( EXC_COOKIE ),
+			qry_cookie = cookie.get( QRY_COOKIE );
 
-		if( !nba_cookie ) {
+		cookie.set( COM_COOKIE, JSON.stringify( {} ) );
+
+		if( !exc_cookie ) {
 			cookie.set( EXC_COOKIE, JSON.stringify( {} ) );
+		}
+
+		if( !qry_cookie ) {
+			cookie.set( QRY_COOKIE, JSON.stringify( {} ) );
 		}
 		
 		NBA.initTabs();
-		NBA.addOptionsBox();
+		//NBA.addOptionsBox();
 
 		//gapi.client.setApiKey( API_KEY );
 		google.charts.load( 'current', { packages: ['table'] } );
@@ -200,7 +208,7 @@ window.nba = ( function() {
 
 	};
 
-	NBA.checkOnChange = function(evt) {
+	NBA.checkOnChange = function( evt ) {
 		var ck  = JSON.parse( cookie.get( EXC_COOKIE ) ),
 			val = evt.currentTarget.value;
 
@@ -218,8 +226,11 @@ window.nba = ( function() {
 	};
 
 	NBA.gInit = function() {
+		var qry_cookie = cookie.get( QRY_COOKIE );
+
 		IS_SINGLE = false;
-		NBA.requestData( '' );
+		NBA.requestData( ( qry_cookie.query ? qry_cookie.query : '' ) );
+		
 		var btn = document.getElementById( 'search-submit' );
 		NBA.addEvent( 'click', btn, NBA.processForm, false );
 	};
@@ -230,7 +241,7 @@ window.nba = ( function() {
 		var form = new FormData( document.forms.namedItem( 'form' ) ),
 			spin = document.getElementById( 'loader' ),
 			wher = false,
-			qStr = 'SELECT A, B, C, G, I, M',
+			qStr = 'SELECT A, B, C, G, I, M, N, O, P, Q, R, S',
 			data = {
 				name    : form.get( 'name' ),
 				ovr     : [
@@ -326,10 +337,14 @@ window.nba = ( function() {
 		}
 
 		var query = new google.visualization.Query( SHEET_URL );
-			qStr  = qStr ? qStr : 'SELECT A, B, C, G, I, M';
+			qStr  = qStr ? qStr : 'SELECT A, B, C, G, I, M, N, O, P, Q, R, S';
 
 		query.setQuery( qStr );
 		query.send( NBA.buildResponse );
+
+		if( !IS_SINGLE ) {
+			cookie.set( QRY_COOKIE, JSON.stringify( { query: qStr } ) );
+		}
 	};
 
 	NBA.buildResponse = function( response ) {
@@ -351,7 +366,7 @@ window.nba = ( function() {
 	NBA.buildTable = function( data ) {
 
 		var div, spin, child, key, i, j, lenI, lenJ, table, thead, tbody, theadInner = '', tbodyInner = '',
-			currentRow, currentVal, theRow;
+			currentRow, currentVal, theRow, theData, compareAction, viewAction, rowLimit, dataInner = '';
 
 		table = document.createElement( 'table' );
 		table.setAttribute( 'id', 'player-list' );
@@ -363,45 +378,79 @@ window.nba = ( function() {
 		tbody.className = 'player-list-body';
 
 		for( key in data.cols ) {
-			theadInner += '<td>' + data.cols[ key ].label + '</td>';
+			if( data.cols[ key ].label === 'GAME OVR' ) {
+				theadInner += '<th>OVERALL</th>';
+			} else if( ABILITIES.indexOf( data.cols[ key ].label ) === -1 ) {
+				theadInner += '<th>' + data.cols[ key ].label + '</th>';
+			} else {
+				continue;
+			}
 		}
 
+		theadInner += '<th>COMPARE</th>';
+		theadInner += '<th></th>';
 		thead.innerHTML = '<tr>' + theadInner + '</tr>';
+		
 
 		for( i = 0, lenI = data.rows.length; i < lenI; i++ ) {
 
 			tbodyInner = '';
+			dataInner  = '';
+			rowLimit = data.rows[ i ].c.length - 6;
 
 			for( j = 0, lenJ = data.rows[ i ].c.length; j < lenJ; j++ ) {
 
-				currentRow  = data.cols[ j ].label.toString().toLowerCase().replace( ' ', '-' );
+				currentRow  = data.cols[ j ].label.toString().replace( ' ', '-' );
 				currentVal  = ( null !== data.rows[ i ].c[ j ] ) ? data.rows[ i ].c[ j ].v : '';
-				tbodyInner += '<td class="';
-				tbodyInner +=  currentRow;
 
-				if( currentVal ) {
+				if( j >= rowLimit ) {
 
-					if( NBA.hasClassRow( currentRow ) ) {
-						tbodyInner += ' ' + currentVal.toString().toLowerCase().replace( ' ', '-' ) + '">';
+					dataInner += '<div class="stats ability">';
+					dataInner += '<div class="stats-detail"><div class="stats-label">' + STATS_ABBR[ currentRow ] + '</div>';
+					dataInner += '<div class="stats-value">' + ( currentVal ) + '</div></div>';
+					dataInner += '<div class="stats-bar">';
+					dataInner += '<div class="stats-bar-value" style="width:' + ( currentVal ) + '%;"></div>';
+					dataInner += '</div></div>';
+
+				} else {
+					
+					tbodyInner += '<td class="';
+					tbodyInner +=  currentRow.toLowerCase();
+
+					if( currentVal ) {
+
+						if( NBA.hasClassRow( currentRow.toLowerCase() ) ) {
+							tbodyInner += ' ' + currentVal.toString().toLowerCase().replace( ' ', '-' ) + '">';
+						} else {
+							tbodyInner += '">';
+						}
+
+						tbodyInner += '<span>' + currentVal + '</span>';
+
 					} else {
+
 						tbodyInner += '">';
 					}
 
-					tbodyInner += '<span>' + currentVal + '</span>';
-
-				} else {
-
-					tbodyInner += '">';
+					tbodyInner += '</td>'; 
 				}
-
-				tbodyInner += '</td>'; 
 			}
 
-			theRow = document.createElement( 'tr' );
-			theRow.innerHTML = tbodyInner;
+			compareAction = NBA.getCompareAction( data.rows[ i ].c );
+			viewAction = NBA.getViewAction();
 
-			NBA.addEvent( 'click', theRow, NBA.processRow, true );
+			theRow = document.createElement( 'tr' );
+			theData = document.createElement( 'tr' );
+			theData.className = 'data hidden';
+			theData.innerHTML = '<td colspan=8>' + dataInner + '</td>';
+
+			theRow.innerHTML = tbodyInner;
+			theRow.appendChild( compareAction );
+			theRow.appendChild( viewAction );
+
+			
 			tbody.appendChild( theRow );
+			tbody.appendChild( theData );
 		}
 
 		table.appendChild( thead );
@@ -420,12 +469,149 @@ window.nba = ( function() {
 
 	};
 
+	NBA.getViewAction = function() {
+
+		var qv, fv, td, cp;
+
+		td = document.createElement( 'td' );
+		td.className = 'actions';
+
+		qv = document.createElement( 'a' );
+		qv.className = 'quick-view';
+		qv.innerHTML = '<i class="icon-chevron-down"></i>';
+		qv.setAttribute( 'title', 'Quick View' );
+
+		NBA.addEvent( 'click', qv, NBA.quickViewRow, true );
+
+		fv = document.createElement( 'a' );
+		fv.className = 'full-view';
+		fv.innerHTML = '<i class="icon-eye"></i>';
+		fv.setAttribute( 'title', 'View Full Stats' );
+
+		NBA.addEvent( 'click', fv, NBA.processRow, true );
+
+		cp = document.createElement( 'a' );
+		cp.className = 'compare hidden';
+		cp.innerHTML = '<i class="icon-compare"></i>';
+		cp.setAttribute( 'title', 'View Comparison' );
+
+		td.appendChild( qv );
+		td.appendChild( fv );
+		td.appendChild( cp );
+
+		return td;
+	};
+
+	NBA.getCompareAction = function( data ) {
+
+		var com, check, label, span1, span2;
+
+		com = document.createElement( 'td' );
+		com.className = 'compares';
+		
+		check = document.createElement( 'input' );
+		check.className = 'compare';
+		check.setAttribute( 'type', 'checkbox' );
+		check.setAttribute( 'value', JSON.stringify( data ) );
+		check.setAttribute( 'name', 'compare[]' );
+		check.setAttribute( 'class', 'switch-input' );
+
+		label = document.createElement( 'label' );
+		span1 = document.createElement( 'span' );
+		span2 = document.createElement( 'span' );
+
+		label.setAttribute( 'class', 'switch' );
+		span1.setAttribute( 'class', 'switch-label' );
+		span1.setAttribute( 'data-on', 'ON' );
+		span1.setAttribute( 'data-off', 'OFF' );
+		span2.setAttribute( 'class', 'switch-handle' );
+
+
+		label.appendChild( check );
+		label.appendChild( span1 );
+		label.appendChild( span2 );
+
+		com.appendChild( label );
+
+		NBA.addEvent( 'click', check, NBA.addToCompare, true );
+
+		return com;
+	};
+
+
+	NBA.addToCompare = function( evt ) {
+
+		var t       = evt.currentTarget,
+			value   = JSON.parse( t.value ),
+			cook    = JSON.parse( cookie.get( COM_COOKIE ) ),
+			checked = this.checked,
+			errors  = false,
+			length  = Object.keys( cook ).length,
+			td, par, act;
+
+		if( checked ) {
+
+			if( length < 2 ) {
+				this.setAttribute( 'data-id', length );
+				cook[ length ] = value;
+				cookie.set( COM_COOKIE, JSON.stringify( cook ) );
+
+				if( Object.keys( cook ).length >= 2 && !errors ) {
+					td = this.parentNode.parentNode.nextElementSibling;
+					act = td.querySelector( 'a.compare' );
+
+					if( act ) {
+						NBA.removeClass( act, 'hidden' );
+					}
+				}
+
+			} else {
+				evt.preventDefault();
+				alert( 'Only can compare 2 players' );
+				errors = true;
+			}
+
+		} else {
+
+			delete cook[ this.getAttribute( 'data-id') ];
+			this.removeAttribute( 'data-id' );
+
+			if( Object.keys( cook ).length > 0 ) {
+
+				var id1;
+			
+				if( cook[1] ) {
+					cook[0] = cook[1];
+					delete cook[ 1 ];
+
+					id1 = document.querySelector( '[data-id="1"]' );
+					par = id1.parentNode.parentNode.nextElementSibling;
+					td  = par.querySelector( '.compare' );
+
+					id1.setAttribute( 'data-id', 0 );
+					NBA.addClass( td, 'hidden' );
+
+				} else {
+
+					par = this.parentNode.parentNode.nextElementSibling;
+					td  = par.querySelector( '.compare' );
+					NBA.addClass( td, 'hidden' );
+				}
+			}
+
+			cookie.set( COM_COOKIE, JSON.stringify( cook ) );
+		}
+		
+	};
+
+
 	NBA.buildTableSingle = function( data ) {
 		var div, spin, i, len, className, 
 			table, thead, tbody, 
 			tbodyInner = '', ck,
 			currentRow, currentVal, skip = [],
-			name, ovr, pos, ht, wt, team, lineup;
+			name, ovr, pos, ht, wt, team, lineup,
+			program;
 
 		spin  = document.getElementById( 'loader' );
 		div   = document.querySelector( '.content .inner' );
@@ -506,6 +692,12 @@ window.nba = ( function() {
 
 						break;
 
+						case 'program':
+
+							program = '<div class="program"><span class="stats-label">Program</span>' + 
+										'<span class="stats-value">' + currentVal + '</span></div>';
+						break;
+
 
 						default:
 						continue;
@@ -542,7 +734,7 @@ window.nba = ( function() {
 
 
 			thead.innerHTML = '<div class="pos-lineup">' + pos + lineup + '</div>' +
-								name + '<div class="desc">' + wt + ht + team + '</div>' + ovr;
+								name + '<div class="desc">' + program + wt + ht + team +  '</div>' + ovr;
 		}
 
 		tbody.innerHTML = tbodyInner;
@@ -553,11 +745,26 @@ window.nba = ( function() {
 		NBA.addClass( spin, 'hidden' );
 	};
 
+	NBA.quickViewRow = function( evt ) {
+		var el = evt.currentTarget,
+			par = el.parentNode.parentNode,
+			unc = par.nextElementSibling;
+
+		if( unc.className.indexOf( 'hidden' ) > -1 ) {
+			NBA.removeClass( unc, 'hidden' );
+			el.children[0].className = 'icon-chevron-up';
+		} else {
+			NBA.addClass( unc, 'hidden' );
+			el.children[0].className = 'icon-chevron-down';
+		}
+	};
+
 	NBA.processRow = function( evt ) {
-		var name, team, pos, lineup, ovr, elem, child, i, len, currentChild, qStr;
+		var name, team, pos, lineup, ovr, elem, par, child, i, len, currentChild, qStr;
 
 		elem  = evt.currentTarget;
-		child = elem.getElementsByTagName( 'td' );
+		par   = elem.parentNode.parentNode;
+		child = par.getElementsByTagName( 'td' );
 
 		for( i = 0, len = child.length; i < len; i++ ) {
 			
@@ -603,6 +810,12 @@ window.nba = ( function() {
 				elem[evt] = func;
 			}
 		}
+	};
+
+	NBA.triggerEvent = function( evt, el ) {
+		var event = document.createEvent( 'HTMLEvents' );
+		event.initEvent( evt, true, false );
+		el.dispatchEvent(event);
 	};
 
 	NBA.addClass = function( el, className ) {
