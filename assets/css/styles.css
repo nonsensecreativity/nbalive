@@ -646,6 +646,12 @@ body * {
 	border-color: #FFDE00;
 }
 
+.player-list-body .actions > a.disabled,
+.player-list-body .actions > a.disabled:hover {
+	color: rgba(255, 255, 255, 0.3);
+	border-color: rgba(255, 255, 255, 0.3);
+}
+
 .compares .switch {
 	width: 70px;
 }
@@ -1100,6 +1106,12 @@ body * {
 .hidden {
 	display: none !important;
 	visibility: hidden !important;
+}
+
+.disabled,
+.invisible {
+	pointer-events: none;
+	cursor: default;
 }
 
 .cf,

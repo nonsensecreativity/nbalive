@@ -105,6 +105,9 @@ window.nba = ( function() {
 		ABILITIES = [
 			'SPD', 'DRI', 'TPT', 'SHT', 'DEF', 'PAS'
 		],
+		COM_DATA = [],
+		COM_COLS = false,
+		IS_COMPARE = false,
 		IS_SINGLE = false;
 
 	NBA.init = function() {
@@ -228,7 +231,8 @@ window.nba = ( function() {
 	NBA.gInit = function() {
 		var qry_cookie = cookie.get( QRY_COOKIE );
 
-		IS_SINGLE = false;
+		IS_SINGLE  = false;
+		IS_COMPARE = false;
 		NBA.requestData( ( qry_cookie.query ? qry_cookie.query : '' ) );
 		
 		var btn = document.getElementById( 'search-submit' );
@@ -311,14 +315,21 @@ window.nba = ( function() {
 
 					} else {
 
-						qStr += TABLE_MAP[ key ] + ' CONTAINS "' + data[ key ] + '"';
+						var value = data[ key ];
+
+						if( key === 'name' ) {
+							value = NBA.ucWords( value );
+						}
+
+						qStr += TABLE_MAP[ key ] + ' CONTAINS "' + value + '"';
 
 					}
 				}
 			}
 		}
 
-		IS_SINGLE = false;
+		IS_SINGLE  = false;
+		IS_COMPARE = false;
 		NBA.requestData( qStr );
 	};
 
@@ -342,7 +353,7 @@ window.nba = ( function() {
 		query.setQuery( qStr );
 		query.send( NBA.buildResponse );
 
-		if( !IS_SINGLE ) {
+		if( !IS_SINGLE && !IS_COMPARE ) {
 			cookie.set( QRY_COOKIE, JSON.stringify( { query: qStr } ) );
 		}
 	};
@@ -357,10 +368,29 @@ window.nba = ( function() {
 			str  = data.toJSON();
 
 		if( IS_SINGLE ) {
+
 			NBA.buildTableSingle( JSON.parse( str ) );
+
+		} else if( IS_COMPARE ) {
+
+			var parse = JSON.parse( str ),
+				cols  = parse.cols;
+
+			if( COM_COLS === false ) {
+				COM_COLS = cols;
+			}
+
+			COM_DATA.push( parse.rows[0].c );
+
+			if( COM_DATA.length > 1 ) {
+				NBA.processCompare();
+			}
+
 		} else {
+
 			NBA.buildTable( JSON.parse( str ) );
 		}
+
 	};
 
 	NBA.buildTable = function( data ) {
@@ -436,7 +466,7 @@ window.nba = ( function() {
 				}
 			}
 
-			compareAction = NBA.getCompareAction( data.rows[ i ].c );
+			compareAction = NBA.getCompareAction();
 			viewAction = NBA.getViewAction();
 
 			theRow = document.createElement( 'tr' );
@@ -491,9 +521,11 @@ window.nba = ( function() {
 		NBA.addEvent( 'click', fv, NBA.processRow, true );
 
 		cp = document.createElement( 'a' );
-		cp.className = 'compare hidden';
+		cp.className = 'compare disabled';
 		cp.innerHTML = '<i class="icon-compare"></i>';
 		cp.setAttribute( 'title', 'View Comparison' );
+
+		NBA.addEvent( 'click', cp, NBA.comparePlayer, true );
 
 		td.appendChild( qv );
 		td.appendChild( fv );
@@ -502,7 +534,7 @@ window.nba = ( function() {
 		return td;
 	};
 
-	NBA.getCompareAction = function( data ) {
+	NBA.getCompareAction = function() {
 
 		var com, check, label, span1, span2;
 
@@ -512,9 +544,9 @@ window.nba = ( function() {
 		check = document.createElement( 'input' );
 		check.className = 'compare';
 		check.setAttribute( 'type', 'checkbox' );
-		check.setAttribute( 'value', JSON.stringify( data ) );
+		check.setAttribute( 'value', true );
 		check.setAttribute( 'name', 'compare[]' );
-		check.setAttribute( 'class', 'switch-input' );
+		check.setAttribute( 'class', 'switch-input switch-compare' );
 
 		label = document.createElement( 'label' );
 		span1 = document.createElement( 'span' );
@@ -541,67 +573,41 @@ window.nba = ( function() {
 
 	NBA.addToCompare = function( evt ) {
 
-		var t       = evt.currentTarget,
-			value   = JSON.parse( t.value ),
-			cook    = JSON.parse( cookie.get( COM_COOKIE ) ),
-			checked = this.checked,
+		var checked = this.checked,
 			errors  = false,
-			length  = Object.keys( cook ).length,
-			td, par, act;
+			checks  = document.querySelectorAll( '[data-compare]' ),
+			length  = checks.length,
+			td;
 
 		if( checked ) {
 
 			if( length < 2 ) {
-				this.setAttribute( 'data-id', length );
-				cook[ length ] = value;
-				cookie.set( COM_COOKIE, JSON.stringify( cook ) );
+				this.setAttribute( 'data-compare', '' );
 
-				if( Object.keys( cook ).length >= 2 && !errors ) {
-					td = this.parentNode.parentNode.nextElementSibling;
-					act = td.querySelector( 'a.compare' );
-
-					if( act ) {
-						NBA.removeClass( act, 'hidden' );
-					}
+				if( length === 1 && ! errors ) {
+					td  = this.parentNode.parentNode.nextElementSibling;
+					NBA.removeClass( td.querySelector( 'a.compare' ), 'disabled' );
 				}
 
 			} else {
+
 				evt.preventDefault();
-				alert( 'Only can compare 2 players' );
+				alert( 'Comparison only 1 vs 1' );
 				errors = true;
 			}
 
 		} else {
 
-			delete cook[ this.getAttribute( 'data-id') ];
-			this.removeAttribute( 'data-id' );
-
-			if( Object.keys( cook ).length > 0 ) {
-
-				var id1;
-			
-				if( cook[1] ) {
-					cook[0] = cook[1];
-					delete cook[ 1 ];
-
-					id1 = document.querySelector( '[data-id="1"]' );
-					par = id1.parentNode.parentNode.nextElementSibling;
-					td  = par.querySelector( '.compare' );
-
-					id1.setAttribute( 'data-id', 0 );
-					NBA.addClass( td, 'hidden' );
-
-				} else {
-
-					par = this.parentNode.parentNode.nextElementSibling;
-					td  = par.querySelector( '.compare' );
-					NBA.addClass( td, 'hidden' );
+			if( this.hasAttribute( 'data-compare' ) ) {
+				this.removeAttribute( 'data-compare' );
+				td = document.querySelector( 'a.compare:not(.disabled)');
+				if( td ) {
+					NBA.addClass( td, 'disabled' );
 				}
 			}
 
-			cookie.set( COM_COOKIE, JSON.stringify( cook ) );
 		}
-		
+
 	};
 
 
@@ -745,6 +751,36 @@ window.nba = ( function() {
 		NBA.addClass( spin, 'hidden' );
 	};
 
+	NBA.comparePlayer = function() {
+
+		if( this.className.indexOf( 'disabled' ) === -1 ) {
+
+			var elems = document.querySelectorAll( '[data-compare]' ),
+				query, i, len, parent, target;
+
+			for( i = 0, len = elems.length; i < len; i++ ) {
+
+				parent = elems[i].parentNode.parentNode.parentNode;
+				target = parent.getElementsByTagName( 'td' );
+				query  = NBA.getQueryFromTd( target );
+				IS_COMPARE = true;
+				IS_SINGLE  = false;
+				NBA.requestData( query );
+
+			}
+		}
+
+	};
+
+	NBA.processCompare = function() {
+
+		var i, len;
+
+		for( i = 0, len = COM_COLS.length; i < len; i++ ) {
+			console.log( COM_COLS[i].label );
+		}
+	};
+
 	NBA.quickViewRow = function( evt ) {
 		var el = evt.currentTarget,
 			par = el.parentNode.parentNode,
@@ -760,28 +796,51 @@ window.nba = ( function() {
 	};
 
 	NBA.processRow = function( evt ) {
-		var name, team, pos, lineup, ovr, elem, par, child, i, len, currentChild, qStr;
+
+		var elem, par, child, qStr;
 
 		elem  = evt.currentTarget;
 		par   = elem.parentNode.parentNode;
 		child = par.getElementsByTagName( 'td' );
+		qStr  = NBA.getQueryFromTd( child );
 
-		for( i = 0, len = child.length; i < len; i++ ) {
+		IS_SINGLE = true;
+		IS_COMPARE = false;
+		NBA.requestData( qStr );
+	};
+
+	NBA.getQueryFromTd = function( elem ) {
+
+		var qStr, i, len, current, name, team, pos, ovr, lineup;
+
+		for( i = 0, len = elem.length; i < len; i++ ) {
 			
-			if( currentChild = child[i].firstElementChild ) {
+			if( current = elem[i].firstElementChild ) {
 
-				if( child[i].className.indexOf( 'player-name' ) > -1 ) {
-					name = currentChild.textContent;
-				} else if( child[i].className.indexOf( 'team' ) > - 1 ) {
-					team = currentChild.textContent;
-				} else if( child[i].className.indexOf( 'position' ) > - 1 ) {
-					pos = currentChild.textContent;
-				} else if( child[i].className.indexOf( 'game-ovr' ) > - 1 ) {
-					ovr = currentChild.textContent;
-				} else if( child[i].className.indexOf( 'lineup' ) > - 1 ) {
-					lineup = currentChild.textContent;
+				if( elem[i].className.indexOf( 'player-name' ) > -1 ) {
+
+					name = current.textContent;
+
+				} else if( elem[i].className.indexOf( 'team' ) > - 1 ) {
+
+					team = current.textContent;
+
+				} else if( elem[i].className.indexOf( 'position' ) > - 1 ) {
+
+					pos = current.textContent;
+
+				} else if( elem[i].className.indexOf( 'game-ovr' ) > - 1 ) {
+
+					ovr = current.textContent;
+
+				} else if( elem[i].className.indexOf( 'lineup' ) > - 1 ) {
+
+					lineup = current.textContent;
+
 				} else {
+
 					continue;
+
 				}
 			}
 		}
@@ -792,8 +851,7 @@ window.nba = ( function() {
 		qStr += ' AND ' + TABLE_MAP.ovr + ' = ' + parseInt( ovr ) + '';
 		qStr += ' LIMIT 1';
 
-		IS_SINGLE = true;
-		NBA.requestData( qStr );
+		return qStr;
 	};
 
 	NBA.hasClassRow = function( currentRow ) {
@@ -837,6 +895,15 @@ window.nba = ( function() {
 
 	NBA.empty = function( value ) {
 		return ( value === '' || value === false || null === value );
+	};
+
+	NBA.ucWords = function( str ) {
+
+		str = str.toLowerCase().replace(/\b[a-z]/g, function( letter ) {
+			return letter.toUpperCase();
+		} );
+
+		return str;
 	};
 
 	if ( document.readyState !== 'loading' ) {

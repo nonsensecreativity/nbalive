@@ -422,6 +422,7 @@ body {
 		margin-top: 9px !important;
 		margin-bottom: -9px !important;
 		text-align: center;
+
 		&:last-child {
 			margin-right: 0 !important;
 		}
@@ -429,6 +430,11 @@ body {
 		&:hover {
 			color: $color__gold;
 			border-color: $color__gold;
+		}
+		
+		&.disabled, &.disabled:hover {
+			color: rgba( 255, 255, 255, .3 );
+			border-color: rgba( 255, 255, 255, .3 );
 		}
 	}
 }
@@ -875,6 +881,12 @@ body {
 .hidden {
 	display: none !important;
 	visibility: hidden !important;
+}
+
+.disabled, .invisible {
+	//visibility: hidden;
+	pointer-events: none;
+	cursor: default;
 }
 
 .cf {
