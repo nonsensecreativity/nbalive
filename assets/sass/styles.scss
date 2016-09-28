@@ -800,6 +800,35 @@ body {
 		}
 	}
 
+	.back {
+		position: absolute;
+		left: 50%;
+		height: 34px;
+		line-height: 34px;
+		width: 120px;
+		background: $color__gold;
+		color: rgba( 0, 0, 0, .8);
+		border-radius: 80px;
+		-moz-border-radius: 80px;
+		-webkit-border-radius: 80px;
+		cursor: pointer;
+		margin-left: -60px;
+		bottom: -17px;
+		font-weight: bold;
+		text-transform: uppercase;
+		text-align: center;
+		transition: all .3s ease-in-out;
+		-moz-transition: all .3s ease-in-out;
+		-webkit-transition: all .3s ease-in-out;
+
+		&:hover {
+			background: $color__body_grad1;
+			color: $color__white;
+			box-shadow: 0 0 0 3px $color__gold inset;
+			-moz-box-shadow: 0 0 0 3px $color__gold inset;
+			-webkit-box-shadow: 0 0 0 3px $color__gold inset;
+		}
+	}
 }
 
 .player-single-body {
@@ -809,13 +838,19 @@ body {
 /*--------------------------------------------------------------
 # Stats Box
 --------------------------------------------------------------*/
-.stats {
-	float: left;
-	font-size: .875em;
 
-	margin-right: 4%;
+.player-single-body {
+	.stats {
+		float: left;
+		margin-right: 4%;
+		width: 30.66%;
+	}
+}
+.stats {
+	
+	font-size: .875em;
 	margin-top: 4%;
-	width: 30.66%;
+	
 	&:not(.hidden) {
 		&:nth-of-type(-n+3) {
 			margin-top: 0;
@@ -873,6 +908,55 @@ body {
 		}
 	}
 }
+
+#player-compare {
+	
+	@extend .cf;
+
+	.stats-label {
+		width: 30%;
+		font-size: .875em;
+		//text-align: right;
+		padding-right: 5em;
+	}
+
+	.stats-col {
+		float: left;
+	}
+
+	.stats-col:not(.stats-label) {
+		width: 30%;
+	}
+
+	.stats-one {
+		margin-right: 10%;
+	}
+
+	.stats-row {
+		@extend .cf;
+		padding: 1em 1.5em;
+		//border-bottom: 1px dashed rgba( 255, 255, 255, .35 );
+		&:nth-of-type(even) {
+			background: rgba( 255, 255, 255, .05 );
+		}
+	}
+
+	.stats-bar {
+		width: 88%;
+		float: left;
+	}
+
+	.stats-value {
+		float: right;
+		width: 12%;
+		text-align: right;
+	}
+
+	.stats {
+		@extend .cf;
+	}
+}
+
 
 /*--------------------------------------------------------------
 # Miscellaneous

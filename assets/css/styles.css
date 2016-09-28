@@ -1037,16 +1037,49 @@ body * {
 	background-position: -248px 0;
 }
 
+.player-single-head .back {
+	position: absolute;
+	left: 50%;
+	height: 34px;
+	line-height: 34px;
+	width: 120px;
+	background: #FFDE00;
+	color: rgba(0, 0, 0, 0.8);
+	border-radius: 80px;
+	-moz-border-radius: 80px;
+	-webkit-border-radius: 80px;
+	cursor: pointer;
+	margin-left: -60px;
+	bottom: -17px;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-align: center;
+	transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-webkit-transition: all .3s ease-in-out;
+}
+
+.player-single-head .back:hover {
+	background: #002D52;
+	color: #FFF;
+	box-shadow: 0 0 0 3px #FFDE00 inset;
+	-moz-box-shadow: 0 0 0 3px #FFDE00 inset;
+	-webkit-box-shadow: 0 0 0 3px #FFDE00 inset;
+}
+
 /*--------------------------------------------------------------
 # Stats Box
 --------------------------------------------------------------*/
 
-.stats {
+.player-single-body .stats {
 	float: left;
-	font-size: .875em;
 	margin-right: 4%;
-	margin-top: 4%;
 	width: 30.66%;
+}
+
+.stats {
+	font-size: .875em;
+	margin-top: 4%;
 }
 
 .stats:not(.hidden):nth-of-type(-n+3) {
@@ -1099,6 +1132,43 @@ body * {
 	background: #01FF70;
 }
 
+#player-compare .stats-label {
+	width: 30%;
+	font-size: .875em;
+	padding-right: 5em;
+}
+
+#player-compare .stats-col {
+	float: left;
+}
+
+#player-compare .stats-col:not(.stats-label) {
+	width: 30%;
+}
+
+#player-compare .stats-one {
+	margin-right: 10%;
+}
+
+#player-compare .stats-row {
+	padding: 1em 1.5em;
+}
+
+#player-compare .stats-row:nth-of-type(even) {
+	background: rgba(255, 255, 255, 0.05);
+}
+
+#player-compare .stats-bar {
+	width: 88%;
+	float: left;
+}
+
+#player-compare .stats-value {
+	float: right;
+	width: 12%;
+	text-align: right;
+}
+
 /*--------------------------------------------------------------
 # Miscellaneous
 --------------------------------------------------------------*/
@@ -1118,7 +1188,10 @@ body * {
 #player-single,
 .player-single-head,
 .player-single-body,
-.stats .stats-detail {
+.stats .stats-detail,
+#player-compare,
+#player-compare .stats-row,
+#player-compare .stats {
 	*zoom: 1;
 }
 
@@ -1126,7 +1199,10 @@ body * {
 #player-single:after,
 .player-single-head:after,
 .player-single-body:after,
-.stats .stats-detail:after {
+.stats .stats-detail:after,
+#player-compare:after,
+#player-compare .stats-row:after,
+#player-compare .stats:after {
 	clear: both;
 }
 
@@ -1135,11 +1211,17 @@ body * {
 .player-single-head:before,
 .player-single-body:before,
 .stats .stats-detail:before,
+#player-compare:before,
+#player-compare .stats-row:before,
+#player-compare .stats:before,
 .cf:after,
 #player-single:after,
 .player-single-head:after,
 .player-single-body:after,
-.stats .stats-detail:after {
+.stats .stats-detail:after,
+#player-compare:after,
+#player-compare .stats-row:after,
+#player-compare .stats:after {
 	content: " "; /* 1 */
 	display: table; /* 2 */
 }

@@ -614,7 +614,7 @@ window.nba = ( function() {
 	NBA.buildTableSingle = function( data ) {
 		var div, spin, i, len, className, 
 			table, thead, tbody, 
-			tbodyInner = '', ck,
+			tbodyInner = '',
 			currentRow, currentVal, skip = [],
 			name, ovr, pos, ht, wt, team, lineup,
 			program;
@@ -721,12 +721,6 @@ window.nba = ( function() {
 							className += ' ability';
 						}
 
-						ck = JSON.parse( cookie.get( EXC_COOKIE ) );
-
-						if( currentRow in ck === true ) {
-							className += ' hidden';
-						}
-
 						tbodyInner += '<div class="stats' + className + '">';
 						tbodyInner += '<div class="stats-detail"><div class="stats-label">' + STATS_ABBR[ currentRow ] + '</div>';
 						tbodyInner += '<div class="stats-value">' + ( currentVal ) + '</div></div>';
@@ -741,6 +735,8 @@ window.nba = ( function() {
 
 			thead.innerHTML = '<div class="pos-lineup">' + pos + lineup + '</div>' +
 								name + '<div class="desc">' + program + wt + ht + team +  '</div>' + ovr;
+
+			NBA.getBackButton( thead, 'single' );
 		}
 
 		tbody.innerHTML = tbodyInner;
@@ -749,6 +745,46 @@ window.nba = ( function() {
 		div.appendChild( table );
 
 		NBA.addClass( spin, 'hidden' );
+	};
+
+	NBA.getBackButton = function( el, type ) {
+		var btn = document.createElement( 'a' );
+		btn.innerHTML = 'Back';
+		btn.className = 'back back-' + type;
+		NBA.addEvent( 'click', btn, NBA.back, false );
+		el.appendChild( btn );
+	};
+
+	NBA.back = function( evt ) {
+
+		evt.preventDefault();
+
+		var spin = document.getElementById( 'loader' ),
+			table = document.getElementById( 'player-list' );
+
+		NBA.removeClass( spin, 'hidden' );
+
+		if( this.className.indexOf( 'back-single' ) > -1 ) {
+
+			var single = document.querySelector( '#player-single' );
+				single.parentNode.removeChild( single );
+
+			window.setTimeout( function(){
+				NBA.addClass( spin, 'hidden' );
+				NBA.removeClass( table, 'hidden' );
+			}, 50 );
+			
+
+		} else if( this.className.indexOf( 'back-compare' ) ) {
+
+			var compare = document.querySelector( '#player-compare' );
+				compare.parentNode.removeChild( compare );
+
+			window.setTimeout( function(){
+				NBA.addClass( spin, 'hidden' );
+				NBA.removeClass( table, 'hidden' );
+			}, 50 );
+		}
 	};
 
 	NBA.comparePlayer = function() {
@@ -774,11 +810,192 @@ window.nba = ( function() {
 
 	NBA.processCompare = function() {
 
-		var i, len;
+		var i, len, skip = [], className, 
+			headOne = '', headTwo = '', 
+			strOne = '', strTwo = '', 
+			strStats = '', currentRow, 
+			currentOne, currentTwo,
+			nameOne, nameTwo,
+			ovrOne, ovrTwo,
+			posOne, posTwo,
+			lineupOne, lineupTwo,
+			teamOne, teamTwo,
+			htOne, htTwo,
+			wtOne, wtTwo,
+			proOne, proTwo;
+
 
 		for( i = 0, len = COM_COLS.length; i < len; i++ ) {
-			console.log( COM_COLS[i].label );
+
+			currentRow = COM_COLS[ i ].label.toString().replace( ' ', '-' );
+			currentOne = ( null !== COM_DATA[ 0 ][ i ] ) ? COM_DATA[ 0 ][ i ].v  : '';
+			currentTwo = ( null !== COM_DATA[ 1 ][ i ] ) ? COM_DATA[ 1 ][ i ].v  : '';
+
+			if( !STATS_ABBR[ currentRow ] ) {
+
+				switch ( currentRow.toLowerCase() ) {
+
+					case 'player-name':
+
+						nameOne = '<h2 class="name">' + currentOne + '</h2>';
+						nameTwo = '<h2 class="name">' + currentTwo + '</h2>';
+
+					break;
+
+					case 'game-ovr':
+
+						var colorOne = 'bronze',
+							colorTwo = 'bronze';
+
+
+						if( parseInt( currentOne ) > 83 ) {
+							colorOne = 'elite';
+						} else if( parseInt( currentOne ) > 72 ) {
+							colorOne = 'gold';
+						} else if( parseInt( currentOne ) > 62 ) {
+							colorOne = 'silver';
+						}
+
+						if( parseInt( currentTwo ) > 83 ) {
+							colorTwo = 'elite';
+						} else if( parseInt( currentTwo ) > 72 ) {
+							colorTwo = 'gold';
+						} else if( parseInt( currentTwo ) > 62 ) {
+							colorTwo = 'silver';
+						}
+
+						ovrOne = '<div class="ovr ' + COM_DATA[ 0 ][ 6 ].v.toString().toLowerCase() + '">' + currentOne + '</div>';
+						ovrTwo = '<div class="ovr ' + COM_DATA[ 1 ][ 6 ].v.toString().toLowerCase() + '">' + currentTwo + '</div>';
+
+					break;
+
+					case 'position':
+
+						posOne = '<div class="position">' + currentOne + '</div>';
+						posTwo = '<div class="position">' + currentTwo + '</div>';
+						
+					break;
+
+					case 'lineup':
+
+						lineupOne = '<div class="lineup ' + currentOne.toString().toLowerCase().replace( ' ', '-' ) + '">' + currentOne + '</div>';
+						lineupTwo = '<div class="lineup ' + currentTwo.toString().toLowerCase().replace( ' ', '-' ) + '">' + currentTwo + '</div>';
+
+					break;
+
+					case 'team':
+
+						teamOne = '<div class="team"><span class="stats-label">Team</span>' + 
+							   '<span class="stats-value ' + currentOne.toString().toLowerCase() + '"></span></div>';
+
+						teamTwo = '<div class="team"><span class="stats-label">Team</span>' + 
+							   '<span class="stats-value ' + currentTwo.toString().toLowerCase() + '"></span></div>';
+
+					break;
+
+					case 'wt':
+
+						wtOne = '<div class="weight"><span class="stats-label">Weight</span>' + 
+							 '<span class="stats-value">' + currentOne + '</span></div>';
+
+						wtTwo = '<div class="weight"><span class="stats-label">Weight</span>' + 
+							 '<span class="stats-value">' + currentTwo + '</span></div>';
+
+					break;
+
+					case 'ht':
+
+						htOne = '<div class="height"><span class="stats-label">Height</span>' + 
+							 '<span class="stats-value">' + currentOne + '</span></div>';
+
+						htTwo = '<div class="height"><span class="stats-label">Height</span>' + 
+							 '<span class="stats-value">' + currentTwo + '</span></div>';
+
+					break;
+
+					case 'program':
+
+						proOne = '<div class="program"><span class="stats-label">Program</span>' + 
+									'<span class="stats-value">' + currentOne + '</span></div>';
+
+						proTwo = '<div class="program"><span class="stats-label">Program</span>' + 
+									'<span class="stats-value">' + currentTwo + '</span></div>';
+
+					break;
+
+
+					default:
+					continue;
+				}
+
+			} else {
+
+				if( ABILITIES.indexOf( currentRow ) > -1 && skip.indexOf( currentRow ) === -1  ) {
+
+					skip.push( currentRow );
+
+				} else {
+
+					className = '';
+
+					strStats += '<div class="stats-row">';
+					strStats += '<div class="stats-label stats-col">' + STATS_ABBR[ currentRow ] + '</div>';
+
+					if( ABILITIES.indexOf( currentRow ) > -1 ) {
+						className += ' ability';
+					}
+
+					strOne = '<div class="stats' + className + ( ( currentOne > currentTwo ) ? ' higher' : '' ) + '">';
+					strOne += '<div class="stats-bar">';
+					strOne += '<div class="stats-bar-value" style="width:' + ( currentOne ) + '%;"></div>';
+					strOne += '</div>';
+					strOne += '<div class="stats-value">' + ( currentOne ) + '</div>';
+					strOne += '</div>';
+
+					strTwo = '<div class="stats' + className + ( ( currentTwo > currentOne ) ? ' higher' : '' ) + '">';
+					strTwo += '<div class="stats-bar">';
+					strTwo += '<div class="stats-bar-value" style="width:' + ( currentTwo ) + '%;"></div>';
+					strTwo += '</div>';
+					strTwo += '<div class="stats-value">' + ( currentTwo ) + '</div>';
+					strTwo += '</div>';
+
+					strStats += '<div class="stats-one stats-col">' + strOne + '</div>';
+					strStats += '<div class="stats-two stats-col">' + strTwo + '</div>';
+					strStats += '</div>';
+
+				}
+				
+			}
 		}
+
+		headOne = '<div class="pos-lineup">' + posOne + lineupOne + '</div>' +
+					nameOne + '<div class="desc">' + proOne + wtOne + htOne + teamOne +  '</div>' + ovrOne;
+
+		headTwo = '<div class="pos-lineup">' + posTwo + lineupTwo + '</div>' +
+					nameTwo + '<div class="desc">' + proTwo + wtTwo + htTwo + teamTwo +  '</div>' + ovrTwo;
+
+		var table  = document.createElement( 'div' ),
+			//divOne = document.createElement( 'div' ),
+			//divTwo = document.createElement( 'div' ),
+			stats  = document.createElement( 'div' ),
+			cont   = document.querySelector( '.content .inner' );
+
+
+		table.setAttribute( 'id', 'player-compare' );
+		//divOne.setAttribute( 'id', 'compare-one' );
+		//divTwo.setAttribute( 'id', 'compare-two' );
+		stats.setAttribute( 'id', 'player-compare-stats' );
+
+		//divOne.className = divTwo.className = 'player-compare-div';
+		//divOne.innerHTML = headOne + strOne;
+		//divTwo.innerHTML = headTwo + strTwo;
+		stats.innerHTML  = strStats;
+
+		table.appendChild( stats );
+		//table.appendChild( divOne );
+		//table.appendChild( divTwo );
+
+		cont.appendChild( table );
 	};
 
 	NBA.quickViewRow = function( evt ) {
@@ -902,6 +1119,10 @@ window.nba = ( function() {
 		str = str.toLowerCase().replace(/\b[a-z]/g, function( letter ) {
 			return letter.toUpperCase();
 		} );
+
+		if( str.indexOf( 'Lebron' ) > -1 ) {
+			str = str.replace( 'Lebron', 'LeBron' );
+		}
 
 		return str;
 	};
