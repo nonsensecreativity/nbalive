@@ -98,6 +98,7 @@ window.nba = ( function() {
 			sht       : 'Q',
 			def       : 'R',
 			pas       : 'S',
+			id        : 'CR',
 		},
 		EXC_COOKIE  = 'nbalive_excl_stats',
 		COM_COOKIE  = 'nbalive_compare',
@@ -105,8 +106,8 @@ window.nba = ( function() {
 		ABILITIES = [
 			'SPD', 'DRI', 'TPT', 'SHT', 'DEF', 'PAS'
 		],
-		COM_DATA = [],
-		COM_COLS = false,
+
+		DEFAULT_QUERY = 'SELECT A, B, C, G, I, M, N, O, P, Q, R, S, CR',
 		IS_COMPARE = false,
 		IS_SINGLE = false;
 
@@ -126,13 +127,12 @@ window.nba = ( function() {
 		}
 		
 		NBA.initTabs();
-		//NBA.addOptionsBox();
 
-		//gapi.client.setApiKey( API_KEY );
 		google.charts.load( 'current', { packages: ['table'] } );
 		google.charts.setOnLoadCallback( NBA.gInit );
+
 	};
-	
+
 	NBA.initTabs = function() {
 		var i, len,
 			tabnav = document.querySelectorAll( '.tab-nav li a' );
@@ -245,7 +245,7 @@ window.nba = ( function() {
 		var form = new FormData( document.forms.namedItem( 'form' ) ),
 			spin = document.getElementById( 'loader' ),
 			wher = false,
-			qStr = 'SELECT A, B, C, G, I, M, N, O, P, Q, R, S',
+			qStr = DEFAULT_QUERY,
 			data = {
 				name    : form.get( 'name' ),
 				ovr     : [
@@ -348,7 +348,7 @@ window.nba = ( function() {
 		}
 
 		var query = new google.visualization.Query( SHEET_URL );
-			qStr  = qStr ? qStr : 'SELECT A, B, C, G, I, M, N, O, P, Q, R, S';
+			qStr  = qStr ? qStr : DEFAULT_QUERY;
 
 		query.setQuery( qStr );
 		query.send( NBA.buildResponse );
@@ -364,39 +364,30 @@ window.nba = ( function() {
 			alert( 'Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage() );
 			return;
 		}
-		var data = response.getDataTable(),
-			str  = data.toJSON();
+		var data = response.getDataTable();
+		var str = data.toJSON();
 
+
+		
 		if( IS_SINGLE ) {
 
 			NBA.buildTableSingle( JSON.parse( str ) );
 
 		} else if( IS_COMPARE ) {
-
-			var parse = JSON.parse( str ),
-				cols  = parse.cols;
-
-			if( COM_COLS === false ) {
-				COM_COLS = cols;
-			}
-
-			COM_DATA.push( parse.rows[0].c );
-
-			if( COM_DATA.length > 1 ) {
-				NBA.processCompare();
-			}
+			
+			NBA.buildTableCompare( JSON.parse( str ) );
 
 		} else {
 
 			NBA.buildTable( JSON.parse( str ) );
 		}
-
+	
 	};
 
 	NBA.buildTable = function( data ) {
 
 		var div, spin, child, key, i, j, lenI, lenJ, table, thead, tbody, theadInner = '', tbodyInner = '',
-			currentRow, currentVal, theRow, theData, compareAction, viewAction, rowLimit, dataInner = '';
+			currentRow, currentVal, theRow, theData, compareAction, viewAction, id, rowLimit, dataInner = '';
 
 		table = document.createElement( 'table' );
 		table.setAttribute( 'id', 'player-list' );
@@ -410,7 +401,7 @@ window.nba = ( function() {
 		for( key in data.cols ) {
 			if( data.cols[ key ].label === 'GAME OVR' ) {
 				theadInner += '<th>OVERALL</th>';
-			} else if( ABILITIES.indexOf( data.cols[ key ].label ) === -1 ) {
+			} else if( ABILITIES.indexOf( data.cols[ key ].label ) === -1 && data.cols[ key ].label !== 'ID' ) {
 				theadInner += '<th>' + data.cols[ key ].label + '</th>';
 			} else {
 				continue;
@@ -426,7 +417,8 @@ window.nba = ( function() {
 
 			tbodyInner = '';
 			dataInner  = '';
-			rowLimit = data.rows[ i ].c.length - 6;
+			rowLimit = data.rows[ i ].c.length - 7;
+			id = '';
 
 			for( j = 0, lenJ = data.rows[ i ].c.length; j < lenJ; j++ ) {
 
@@ -435,12 +427,20 @@ window.nba = ( function() {
 
 				if( j >= rowLimit ) {
 
-					dataInner += '<div class="stats ability">';
-					dataInner += '<div class="stats-detail"><div class="stats-label">' + STATS_ABBR[ currentRow ] + '</div>';
-					dataInner += '<div class="stats-value">' + ( currentVal ) + '</div></div>';
-					dataInner += '<div class="stats-bar">';
-					dataInner += '<div class="stats-bar-value" style="width:' + ( currentVal ) + '%;"></div>';
-					dataInner += '</div></div>';
+					if( currentRow.toLowerCase() === 'id' ) {
+
+						id = currentVal;
+
+					} else {
+					
+						dataInner += '<div class="stats ability">';
+						dataInner += '<div class="stats-detail"><div class="stats-label">' + STATS_ABBR[ currentRow ] + '</div>';
+						dataInner += '<div class="stats-value">' + ( currentVal ) + '</div></div>';
+						dataInner += '<div class="stats-bar">';
+						dataInner += '<div class="stats-bar-value" style="width:' + ( currentVal ) + '%;"></div>';
+						dataInner += '</div></div>';
+
+					}
 
 				} else {
 					
@@ -463,6 +463,7 @@ window.nba = ( function() {
 					}
 
 					tbodyInner += '</td>'; 
+					
 				}
 			}
 
@@ -475,6 +476,7 @@ window.nba = ( function() {
 			theData.innerHTML = '<td colspan=8>' + dataInner + '</td>';
 
 			theRow.innerHTML = tbodyInner;
+			theRow.setAttribute( 'data-id', id );
 			theRow.appendChild( compareAction );
 			theRow.appendChild( viewAction );
 
@@ -772,7 +774,7 @@ window.nba = ( function() {
 			window.setTimeout( function(){
 				NBA.addClass( spin, 'hidden' );
 				NBA.removeClass( table, 'hidden' );
-			}, 50 );
+			}, 30 );
 			
 
 		} else if( this.className.indexOf( 'back-compare' ) ) {
@@ -783,7 +785,7 @@ window.nba = ( function() {
 			window.setTimeout( function(){
 				NBA.addClass( spin, 'hidden' );
 				NBA.removeClass( table, 'hidden' );
-			}, 50 );
+			}, 30 );
 		}
 	};
 
@@ -794,26 +796,35 @@ window.nba = ( function() {
 			var elems = document.querySelectorAll( '[data-compare]' ),
 				query, i, len, parent, target;
 
+			query = 'SELECT * WHERE';
+
 			for( i = 0, len = elems.length; i < len; i++ ) {
 
 				parent = elems[i].parentNode.parentNode.parentNode;
-				target = parent.getElementsByTagName( 'td' );
-				query  = NBA.getQueryFromTd( target );
-				IS_COMPARE = true;
-				IS_SINGLE  = false;
-				NBA.requestData( query );
+				target = parent.getAttribute( 'data-id' );
+				query += ' ' + TABLE_MAP.id + ' = "' + target + '"';
 
+				if( i < 1 ) {
+					query += ' OR ';
+				} else {
+					query += ' LIMIT 2';
+				}
 			}
+
+			IS_COMPARE = true;
+			IS_SINGLE  = false;
+
+			NBA.requestData( query );
 		}
 
 	};
 
-	NBA.processCompare = function() {
+	NBA.buildTableCompare = function( data ) {
 
 		var i, len, skip = [], className, 
 			headOne = '', headTwo = '', 
 			strOne = '', strTwo = '', 
-			strStats = '', currentRow, 
+			strStats = '', currentRow,
 			currentOne, currentTwo,
 			nameOne, nameTwo,
 			ovrOne, ovrTwo,
@@ -825,11 +836,11 @@ window.nba = ( function() {
 			proOne, proTwo;
 
 
-		for( i = 0, len = COM_COLS.length; i < len; i++ ) {
+		for( i = 0, len = data.cols.length; i < len; i++ ) {
 
-			currentRow = COM_COLS[ i ].label.toString().replace( ' ', '-' );
-			currentOne = ( null !== COM_DATA[ 0 ][ i ] ) ? COM_DATA[ 0 ][ i ].v  : '';
-			currentTwo = ( null !== COM_DATA[ 1 ][ i ] ) ? COM_DATA[ 1 ][ i ].v  : '';
+			currentRow = data.cols[ i ].label.toString().replace( ' ', '-' );
+			currentOne = ( null !== data.rows[ 0 ].c[ i ] ) ? data.rows[ 0 ].c[ i ].v  : '';
+			currentTwo = ( null !== data.rows[ 1 ].c[ i ] ) ? data.rows[ 1 ].c[ i ].v  : '';
 
 			if( !STATS_ABBR[ currentRow ] ) {
 
@@ -864,8 +875,8 @@ window.nba = ( function() {
 							colorTwo = 'silver';
 						}
 
-						ovrOne = '<div class="ovr ' + COM_DATA[ 0 ][ 6 ].v.toString().toLowerCase() + '">' + currentOne + '</div>';
-						ovrTwo = '<div class="ovr ' + COM_DATA[ 1 ][ 6 ].v.toString().toLowerCase() + '">' + currentTwo + '</div>';
+						ovrOne = '<div class="ovr ' + data.rows[ 0 ].c[ 6 ].v.toString().toLowerCase() + '">' + currentOne + '</div>';
+						ovrTwo = '<div class="ovr ' + data.rows[ 1 ].c[ 6 ].v.toString().toLowerCase() + '">' + currentTwo + '</div>';
 
 					break;
 
@@ -949,7 +960,15 @@ window.nba = ( function() {
 					strOne += '<div class="stats-bar">';
 					strOne += '<div class="stats-bar-value" style="width:' + ( currentOne ) + '%;"></div>';
 					strOne += '</div>';
-					strOne += '<div class="stats-value">' + ( currentOne ) + '</div>';
+					strOne += '<div class="stats-value"><span>' + ( currentOne ) + '</span>';
+
+					if( currentOne > currentTwo ) {
+						strOne += '<span class="stats-up">( &uarr; ' + ( currentOne - currentTwo ) + ' )</span>';
+					} else if( currentOne < currentTwo ) {
+						strOne += '<span class="stats-down">( &darr; ' + ( currentTwo - currentOne ) + ' )</span>';
+					}
+
+					strOne += '</div>';
 					strOne += '</div>';
 
 					strTwo = '<div class="stats' + className + ( ( currentTwo > currentOne ) ? ' higher' : '' ) + '">';
@@ -968,33 +987,41 @@ window.nba = ( function() {
 			}
 		}
 
-		headOne = '<div class="pos-lineup">' + posOne + lineupOne + '</div>' +
-					nameOne + '<div class="desc">' + proOne + wtOne + htOne + teamOne +  '</div>' + ovrOne;
+		headOne = '<div class="cf"><div class="pos-lineup">' + posOne + lineupOne + '</div>' +
+					nameOne + '</div><div class="desc">' + proOne + wtOne + htOne + teamOne +  '</div>' + ovrOne;
 
-		headTwo = '<div class="pos-lineup">' + posTwo + lineupTwo + '</div>' +
-					nameTwo + '<div class="desc">' + proTwo + wtTwo + htTwo + teamTwo +  '</div>' + ovrTwo;
+		headTwo = '<div class="cf"><div class="pos-lineup">' + posTwo + lineupTwo + '</div>' +
+					nameTwo + '</div><div class="desc">' + proTwo + wtTwo + htTwo + teamTwo +  '</div>' + ovrTwo;
 
 		var table  = document.createElement( 'div' ),
-			//divOne = document.createElement( 'div' ),
-			//divTwo = document.createElement( 'div' ),
+			divOne = document.createElement( 'div' ),
+			divTwo = document.createElement( 'div' ),
+			divCon = document.createElement( 'div' ),
 			stats  = document.createElement( 'div' ),
-			cont   = document.querySelector( '.content .inner' );
+			cont   = document.querySelector( '.content .inner' ),
+			spin   = document.getElementById( 'loader' );
 
 
 		table.setAttribute( 'id', 'player-compare' );
-		//divOne.setAttribute( 'id', 'compare-one' );
-		//divTwo.setAttribute( 'id', 'compare-two' );
+		divOne.setAttribute( 'id', 'compare-one' );
+		divTwo.setAttribute( 'id', 'compare-two' );
 		stats.setAttribute( 'id', 'player-compare-stats' );
 
-		//divOne.className = divTwo.className = 'player-compare-div';
-		//divOne.innerHTML = headOne + strOne;
-		//divTwo.innerHTML = headTwo + strTwo;
+		divOne.className = divTwo.className = 'desc-col';
+		divOne.innerHTML = headOne;
+		divTwo.innerHTML = headTwo;
 		stats.innerHTML  = strStats;
 
-		table.appendChild( stats );
-		//table.appendChild( divOne );
-		//table.appendChild( divTwo );
+		divCon.innerHTML = '<div class="versus">vs</div>';
+		divCon.appendChild( divOne );
+		divCon.appendChild( divTwo );
+		divCon.setAttribute( 'id', 'player-compare-desc' );
 
+		table.appendChild( divCon );
+		table.appendChild( stats );
+
+		NBA.getBackButton( divCon, 'compare' );
+		NBA.addClass( spin, 'hidden' );
 		cont.appendChild( table );
 	};
 
@@ -1014,61 +1041,15 @@ window.nba = ( function() {
 
 	NBA.processRow = function( evt ) {
 
-		var elem, par, child, qStr;
+		var elem, par, qStr;
 
 		elem  = evt.currentTarget;
 		par   = elem.parentNode.parentNode;
-		child = par.getElementsByTagName( 'td' );
-		qStr  = NBA.getQueryFromTd( child );
+		qStr  = 'SElECT * WHERE ' + TABLE_MAP.id + ' = "' + par.getAttribute( 'data-id' ) + '"';
 
 		IS_SINGLE = true;
 		IS_COMPARE = false;
 		NBA.requestData( qStr );
-	};
-
-	NBA.getQueryFromTd = function( elem ) {
-
-		var qStr, i, len, current, name, team, pos, ovr, lineup;
-
-		for( i = 0, len = elem.length; i < len; i++ ) {
-			
-			if( current = elem[i].firstElementChild ) {
-
-				if( elem[i].className.indexOf( 'player-name' ) > -1 ) {
-
-					name = current.textContent;
-
-				} else if( elem[i].className.indexOf( 'team' ) > - 1 ) {
-
-					team = current.textContent;
-
-				} else if( elem[i].className.indexOf( 'position' ) > - 1 ) {
-
-					pos = current.textContent;
-
-				} else if( elem[i].className.indexOf( 'game-ovr' ) > - 1 ) {
-
-					ovr = current.textContent;
-
-				} else if( elem[i].className.indexOf( 'lineup' ) > - 1 ) {
-
-					lineup = current.textContent;
-
-				} else {
-
-					continue;
-
-				}
-			}
-		}
-
-		qStr  = 'SELECT * WHERE ' + TABLE_MAP.name + ' = "' + name + '"';
-		qStr += ' AND ' + TABLE_MAP.pos + ' = "' + pos + '"';
-		qStr += ' AND ' + TABLE_MAP.lineup + ' = "' + lineup + '"';
-		qStr += ' AND ' + TABLE_MAP.ovr + ' = ' + parseInt( ovr ) + '';
-		qStr += ' LIMIT 1';
-
-		return qStr;
 	};
 
 	NBA.hasClassRow = function( currentRow ) {
@@ -1136,5 +1117,3 @@ window.nba = ( function() {
 	return NBA;
 
 })( window );
-
-

@@ -79,7 +79,7 @@ module.exports = function(grunt) {
 					exports : true,
 					module  : false
 				},
-				predef  :['XMLHttpRequest', 'ActiveXObject', 'FormData', 'alert', 'cookie', 'console', 'google', 'document', 'navigator', 'location', 'window', 'Event']
+				predef  :['XMLHttpRequest', 'ActiveXObject', 'FormData', 'jQuery', 'alert', 'cookie', 'console', 'google', 'document', 'navigator', 'location', 'window', 'Event']
 			}
 		},
 
