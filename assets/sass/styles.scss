@@ -73,6 +73,8 @@ body {
 .inner {
 	height: 100%;
 	min-height: 100%;
+	white-space: nowrap;
+	max-width: 100%;
 }
 
 
@@ -706,14 +708,15 @@ body {
 	}
 
 	.ovr {
-		float: right;
+		position: absolute;
+		right: 0;
+		top: 13px;
 		font-size: 80px;
 		font-weight: bold;
 		text-shadow: -2px 2px 0 rgba( 0, 0, 0, .6 );
 		line-height: 64px;
 
 	}
-
 	
 	.desc {
 		display: inline-block;
@@ -856,6 +859,7 @@ body {
 		width: 30.66%;
 	}
 }
+
 .stats {
 	
 	font-size: .875em;
@@ -922,9 +926,20 @@ body {
 #player-compare {
 	
 	@extend .cf;
+	white-space: nowrap;
 
 	.stats-label {
 		font-size: .875em;
+	}
+
+	.desc-col, .stats-col, .stats-label {
+		float: left;
+		position: relative;
+	}
+
+	.desc-col, .stats-col:not(.stats-label) {
+		padding-left: 1.5%;
+		padding-right: 1.5%;
 	}
 
 	#player-compare-desc {
@@ -933,38 +948,15 @@ body {
  		position: relative;
  		@extend .cf;
 
-		#compare-one {
-			margin-left: 26%;
-		}
-
-		.desc-col {
-			float: left;
-			position: relative;
-		}
-
-		.desc-col {
-			width: 30%;
-		}
-
-		#compare-one {
-			margin-right: 14%;
-		}
-
-		.stats-label {
-			float: left;
-		}
-
-
 		.stats-value {
 			text-align: right;
 			float: right;
 		}
 
 		.name {
-			float: left;
 			text-transform: uppercase;
 			font-size: 20px;
-			margin: 20px 0 0 10px;
+			white-space: normal;
 		}
 
 		.desc {
@@ -993,29 +985,21 @@ body {
 			font-weight: bold;
 			text-shadow: -2px 2px 0 rgba( 0, 0, 0, .6 );
 			text-align: center;
-			padding: 15px 0;
+			padding: 15px 0 0 0;
 			line-height: 80px;
+		}
+
+		#compare-1 {
+			margin-left: 25%;
 		}
 	}
 
 	#player-compare-stats {
-
+		
 		.stats-label {
-			width: 26%;
-		}
-
-		.stats-col {
-			float: left;
-		}
-
-		.stats-col:not(.stats-label) {
-			width: 30%;
+			width: 25%;
 		}
 		
-		.stats-one {
-			margin-right: 14%;
-		}
-
 		.stats-row {
 			@extend .cf;
 			padding: 1em 1.5em;
@@ -1056,6 +1040,90 @@ body {
 
 	}
 
+	&.cols-1, &.cols-2 {
+	
+
+		.stats-col:not(.stats-label), .desc-col {
+			width: 37.5%;
+			padding-left: 3%;
+			padding-right: 3%;
+		}
+
+	}
+
+	&.cols-3, &.cols-4 {
+		
+		#player-compare-desc {
+			.pos-lineup {
+				float: none;
+				margin-left: auto;
+				margin-right: auto;
+				width: 52px;
+			}
+			.name {
+				text-align: center;
+				width: 80%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+		}
+
+	}
+	
+	&.cols-3 {
+		.desc-col, .stats-col:not(.stats-label) {
+			width: 25%;
+		}
+		#player-compare-stats {
+			.stats-bar {
+				width: 80%;
+			}
+		}
+	}	
+
+	&.cols-4 {
+		#player-compare-stats {
+			.stats-bar {
+				width: 75%;
+			}
+		}
+		.desc-col, .stats-col:not(.stats-label) {
+			width: 18.75%;
+		}
+
+		#player-compare-desc {
+			.weight, .height, .name, .program {
+				.stats-label, .stats-value {
+					float: none;
+					display: block;
+					text-align: left;
+				}
+				.stats-label {
+					margin-bottom: 5px;
+				}
+			}
+			
+		}
+
+		.desc-col {
+			.weight, .height {
+				float: left;
+				width: 50%;
+			}
+			.weight {
+				padding-right: 2%;
+			}
+			.height {
+				padding-left: 2%;
+				clear: right;
+			}
+			.team {
+				width: 100%;
+				clear: both;
+			}
+		}
+	}
+
 	.versus {
 		font-size: 80px;
 		line-height: 80px;
@@ -1070,8 +1138,8 @@ body {
 	}
 
 	.back {
-		top: 55%;
-		left: 8%;
+		top: 50%;
+		left: 7.5%;
 	}
 }
 

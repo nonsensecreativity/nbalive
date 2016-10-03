@@ -579,22 +579,26 @@ window.nba = ( function() {
 			errors  = false,
 			checks  = document.querySelectorAll( '[data-compare]' ),
 			length  = checks.length,
-			td;
+			td, tds;
 
 		if( checked ) {
 
-			if( length < 2 ) {
+			if( length < 4 ) {
 				this.setAttribute( 'data-compare', '' );
 
-				if( length === 1 && ! errors ) {
+				if( length > 0 && ! errors ) {
 					td  = this.parentNode.parentNode.nextElementSibling;
+					tds = document.querySelector( 'a.compare:not(.disabled)' );
+					if( tds ) {
+						NBA.addClass( tds, 'disabled' );
+					}
 					NBA.removeClass( td.querySelector( 'a.compare' ), 'disabled' );
 				}
 
 			} else {
 
 				evt.preventDefault();
-				alert( 'Comparison only 1 vs 1' );
+				alert( 'Comparison only up to 4 players' );
 				errors = true;
 			}
 
@@ -602,9 +606,21 @@ window.nba = ( function() {
 
 			if( this.hasAttribute( 'data-compare' ) ) {
 				this.removeAttribute( 'data-compare' );
+
 				td = document.querySelector( 'a.compare:not(.disabled)');
+
 				if( td ) {
 					NBA.addClass( td, 'disabled' );
+				}
+
+				checks  = document.querySelectorAll( '[data-compare]' );
+				length  = checks.length;
+
+				if( length > 1 ) {
+					tds = checks[ length - 1 ].parentNode.parentNode.nextElementSibling.querySelector( '.compare' );
+					if( tds ) {
+						NBA.removeClass( tds , 'disabled' );
+					}
 				}
 			}
 
@@ -804,10 +820,10 @@ window.nba = ( function() {
 				target = parent.getAttribute( 'data-id' );
 				query += ' ' + TABLE_MAP.id + ' = "' + target + '"';
 
-				if( i < 1 ) {
+				if( i < ( len - 1 ) ) {
 					query += ' OR ';
 				} else {
-					query += ' LIMIT 2';
+					query += ' LIMIT ' + len;
 				}
 			}
 
@@ -819,124 +835,116 @@ window.nba = ( function() {
 
 	};
 
+	NBA.getDescHTML = function( row, value ) {
+
+		var html = '';
+
+		switch ( row.toLowerCase() ) {
+
+			case 'player-name':
+				html = '<h2 class="name">' + value + '</h2>';
+			break;
+
+			case 'game-ovr':
+
+				var color = 'bronze';
+
+				if( parseInt( value ) > 83 ) {
+					color = 'elite';
+				} else if( parseInt( value ) > 72 ) {
+					color = 'gold';
+				} else if( parseInt( value ) > 62 ) {
+					color = 'silver';
+				}
+
+				html = '<div class="ovr ' + color + '">' + value + '</div>';
+				
+
+			break;
+
+			case 'position':
+
+				html = '<div class="position">' + value + '</div>';
+				
+			break;
+
+			case 'lineup':
+
+				html = '<div class="lineup ' + value.toString().toLowerCase().replace( ' ', '-' ) + '">' + value + '</div>';
+
+			break;
+
+			case 'team':
+
+				html = '<div class="team"><span class="stats-label">Team</span>' + 
+					   '<span class="stats-value ' + value.toString().toLowerCase() + '"></span></div>';
+
+
+			break;
+
+			case 'wt':
+
+				html = '<div class="weight"><span class="stats-label">Weight</span>' + 
+					   '<span class="stats-value">' + value + '</span></div>';
+
+			break;
+
+			case 'ht':
+
+				html = '<div class="height"><span class="stats-label">Height</span>' + 
+					   '<span class="stats-value">' + value + '</span></div>';
+
+			break;
+
+			case 'program':
+
+				html = '<div class="program"><span class="stats-label">Program</span>' + 
+					   '<span class="stats-value">' + value + '</span></div>';
+
+			break;
+		}
+
+		return html;
+	};
+
 	NBA.buildTableCompare = function( data ) {
 
-		var i, len, skip = [], className, 
-			headOne = '', headTwo = '', 
-			strOne = '', strTwo = '', 
-			strStats = '', currentRow,
-			currentOne, currentTwo,
-			nameOne, nameTwo,
-			ovrOne, ovrTwo,
-			posOne, posTwo,
-			lineupOne, lineupTwo,
-			teamOne, teamTwo,
-			htOne, htTwo,
-			wtOne, wtTwo,
-			proOne, proTwo;
+		var compareLength  = data.rows.length,
+			headerTemplate = '<div class="cf">' + 
+							 '<div class="pos-lineup">{position}{lineup}</div>' + 
+							 '{player-name}' + 
+							 '</div>' + 
+							 '<div class="desc">{program}{wt}{ht}{team}</div>' + 
+							 '{game-ovr}',
+			table = document.createElement( 'div' ),
+			thead = document.createElement( 'div' ),
+			tbody = document.createElement( 'div' ),
+			cont  = document.querySelector( '.content .inner' ),
+			spin  = document.getElementById( 'loader' ),
+			html, theadInner = [], tbodyInner = [], 
+			className, count, i, len, skip = [], currentRow, currentVal;
 
+
+		table.setAttribute( 'id', 'player-compare' );
+		thead.setAttribute( 'id', 'player-compare-desc' );
+		tbody.setAttribute( 'id', 'player-compare-stats' );
+		table.className = 'cols-' + compareLength;
 
 		for( i = 0, len = data.cols.length; i < len; i++ ) {
-
+			
 			currentRow = data.cols[ i ].label.toString().replace( ' ', '-' );
-			currentOne = ( null !== data.rows[ 0 ].c[ i ] ) ? data.rows[ 0 ].c[ i ].v  : '';
-			currentTwo = ( null !== data.rows[ 1 ].c[ i ] ) ? data.rows[ 1 ].c[ i ].v  : '';
 
 			if( !STATS_ABBR[ currentRow ] ) {
 
-				switch ( currentRow.toLowerCase() ) {
+				for( count = 0; count < compareLength; count++ ) {
 
-					case 'player-name':
+					currentVal = ( null !== data.rows[ count ].c[ i ] ) ? data.rows[ count ].c[ i ].v  : '';
+					html = NBA.getDescHTML( currentRow, currentVal );
+					theadInner[ count ] = theadInner[ count ] ? 
+												theadInner[ count ] : 
+												'<div class="desc-col" id="compare-' + ( count + 1 ) + '">' + headerTemplate + '</div>';
+					theadInner[ count ] = theadInner[ count ].replace( '{' + currentRow.toLowerCase() + '}', html );
 
-						nameOne = '<h2 class="name">' + currentOne + '</h2>';
-						nameTwo = '<h2 class="name">' + currentTwo + '</h2>';
-
-					break;
-
-					case 'game-ovr':
-
-						var colorOne = 'bronze',
-							colorTwo = 'bronze';
-
-
-						if( parseInt( currentOne ) > 83 ) {
-							colorOne = 'elite';
-						} else if( parseInt( currentOne ) > 72 ) {
-							colorOne = 'gold';
-						} else if( parseInt( currentOne ) > 62 ) {
-							colorOne = 'silver';
-						}
-
-						if( parseInt( currentTwo ) > 83 ) {
-							colorTwo = 'elite';
-						} else if( parseInt( currentTwo ) > 72 ) {
-							colorTwo = 'gold';
-						} else if( parseInt( currentTwo ) > 62 ) {
-							colorTwo = 'silver';
-						}
-
-						ovrOne = '<div class="ovr ' + data.rows[ 0 ].c[ 6 ].v.toString().toLowerCase() + '">' + currentOne + '</div>';
-						ovrTwo = '<div class="ovr ' + data.rows[ 1 ].c[ 6 ].v.toString().toLowerCase() + '">' + currentTwo + '</div>';
-
-					break;
-
-					case 'position':
-
-						posOne = '<div class="position">' + currentOne + '</div>';
-						posTwo = '<div class="position">' + currentTwo + '</div>';
-						
-					break;
-
-					case 'lineup':
-
-						lineupOne = '<div class="lineup ' + currentOne.toString().toLowerCase().replace( ' ', '-' ) + '">' + currentOne + '</div>';
-						lineupTwo = '<div class="lineup ' + currentTwo.toString().toLowerCase().replace( ' ', '-' ) + '">' + currentTwo + '</div>';
-
-					break;
-
-					case 'team':
-
-						teamOne = '<div class="team"><span class="stats-label">Team</span>' + 
-							   '<span class="stats-value ' + currentOne.toString().toLowerCase() + '"></span></div>';
-
-						teamTwo = '<div class="team"><span class="stats-label">Team</span>' + 
-							   '<span class="stats-value ' + currentTwo.toString().toLowerCase() + '"></span></div>';
-
-					break;
-
-					case 'wt':
-
-						wtOne = '<div class="weight"><span class="stats-label">Weight</span>' + 
-							 '<span class="stats-value">' + currentOne + '</span></div>';
-
-						wtTwo = '<div class="weight"><span class="stats-label">Weight</span>' + 
-							 '<span class="stats-value">' + currentTwo + '</span></div>';
-
-					break;
-
-					case 'ht':
-
-						htOne = '<div class="height"><span class="stats-label">Height</span>' + 
-							 '<span class="stats-value">' + currentOne + '</span></div>';
-
-						htTwo = '<div class="height"><span class="stats-label">Height</span>' + 
-							 '<span class="stats-value">' + currentTwo + '</span></div>';
-
-					break;
-
-					case 'program':
-
-						proOne = '<div class="program"><span class="stats-label">Program</span>' + 
-									'<span class="stats-value">' + currentOne + '</span></div>';
-
-						proTwo = '<div class="program"><span class="stats-label">Program</span>' + 
-									'<span class="stats-value">' + currentTwo + '</span></div>';
-
-					break;
-
-
-					default:
-					continue;
 				}
 
 			} else {
@@ -947,82 +955,56 @@ window.nba = ( function() {
 
 				} else {
 
-					className = '';
+					for( count = 0; count < compareLength; count++ ) {
 
-					strStats += '<div class="stats-row">';
-					strStats += '<div class="stats-label stats-col">' + STATS_ABBR[ currentRow ] + '</div>';
+						currentVal = ( null !== data.rows[ count ].c[ i ] ) ? data.rows[ count ].c[ i ].v  : '';
+						className = '';
 
-					if( ABILITIES.indexOf( currentRow ) > -1 ) {
-						className += ' ability';
+						if( ! tbodyInner[ i ] ) {
+							tbodyInner[ i ] = [];
+						}
+
+						if( ! tbodyInner[ i ][ count ] ) {
+							tbodyInner[ i ][ count ] = '';
+						}
+
+						if( ABILITIES.indexOf( currentRow ) > -1 ) {
+							className = ' ability';
+						}
+
+						tbodyInner[ i ][ count ] += '<div class="stats-' + ( count + 1 ) + ' stats-col">';
+							tbodyInner[ i ][ count ] += '<div class="stats' + className +'">';
+								tbodyInner[ i ][ count ] += '<div class="stats-bar">';
+									tbodyInner[ i ][ count ] += '<div class="stats-bar-value" style="width:' + ( currentVal ) + '%;"></div>';
+								tbodyInner[ i ][ count ] += '</div>';
+								tbodyInner[ i ][ count ] += '<div class="stats-value">';
+									tbodyInner[ i ][ count ] += '<span>' + ( currentVal ) + '</span>';
+								tbodyInner[ i ][ count ] += '</div>';
+							tbodyInner[ i ][ count ] += '</div>';
+						tbodyInner[ i ][ count ] += '</div>';
+							
 					}
 
-					strOne = '<div class="stats' + className + ( ( currentOne > currentTwo ) ? ' higher' : '' ) + '">';
-					strOne += '<div class="stats-bar">';
-					strOne += '<div class="stats-bar-value" style="width:' + ( currentOne ) + '%;"></div>';
-					strOne += '</div>';
-					strOne += '<div class="stats-value"><span>' + ( currentOne ) + '</span>';
-
-					if( currentOne > currentTwo ) {
-						strOne += '<span class="stats-up">( &uarr; ' + ( currentOne - currentTwo ) + ' )</span>';
-					} else if( currentOne < currentTwo ) {
-						strOne += '<span class="stats-down">( &darr; ' + ( currentTwo - currentOne ) + ' )</span>';
+					if( tbodyInner[ i ] ) {
+						tbodyInner[ i ] = '<div class="stats-row"><div class="stats-label stats-col">' + STATS_ABBR[ currentRow ] + '</div>' + tbodyInner[ i ].join( '' ) + '</div>';
 					}
-
-					strOne += '</div>';
-					strOne += '</div>';
-
-					strTwo = '<div class="stats' + className + ( ( currentTwo > currentOne ) ? ' higher' : '' ) + '">';
-					strTwo += '<div class="stats-bar">';
-					strTwo += '<div class="stats-bar-value" style="width:' + ( currentTwo ) + '%;"></div>';
-					strTwo += '</div>';
-					strTwo += '<div class="stats-value">' + ( currentTwo ) + '</div>';
-					strTwo += '</div>';
-
-					strStats += '<div class="stats-one stats-col">' + strOne + '</div>';
-					strStats += '<div class="stats-two stats-col">' + strTwo + '</div>';
-					strStats += '</div>';
-
 				}
-				
 			}
+
 		}
 
-		headOne = '<div class="cf"><div class="pos-lineup">' + posOne + lineupOne + '</div>' +
-					nameOne + '</div><div class="desc">' + proOne + wtOne + htOne + teamOne +  '</div>' + ovrOne;
+		thead.innerHTML = '<div class="versus">vs</div>' + theadInner.join( '' );
+		tbody.innerHTML = tbodyInner.join( '' );
+		table.appendChild( thead );
+		table.appendChild( tbody );
 
-		headTwo = '<div class="cf"><div class="pos-lineup">' + posTwo + lineupTwo + '</div>' +
-					nameTwo + '</div><div class="desc">' + proTwo + wtTwo + htTwo + teamTwo +  '</div>' + ovrTwo;
+		NBA.getBackButton( thead, 'compare' );
 
-		var table  = document.createElement( 'div' ),
-			divOne = document.createElement( 'div' ),
-			divTwo = document.createElement( 'div' ),
-			divCon = document.createElement( 'div' ),
-			stats  = document.createElement( 'div' ),
-			cont   = document.querySelector( '.content .inner' ),
-			spin   = document.getElementById( 'loader' );
-
-
-		table.setAttribute( 'id', 'player-compare' );
-		divOne.setAttribute( 'id', 'compare-one' );
-		divTwo.setAttribute( 'id', 'compare-two' );
-		stats.setAttribute( 'id', 'player-compare-stats' );
-
-		divOne.className = divTwo.className = 'desc-col';
-		divOne.innerHTML = headOne;
-		divTwo.innerHTML = headTwo;
-		stats.innerHTML  = strStats;
-
-		divCon.innerHTML = '<div class="versus">vs</div>';
-		divCon.appendChild( divOne );
-		divCon.appendChild( divTwo );
-		divCon.setAttribute( 'id', 'player-compare-desc' );
-
-		table.appendChild( divCon );
-		table.appendChild( stats );
-
-		NBA.getBackButton( divCon, 'compare' );
 		NBA.addClass( spin, 'hidden' );
 		cont.appendChild( table );
+
+		
+	
 	};
 
 	NBA.quickViewRow = function( evt ) {
@@ -1113,6 +1095,13 @@ window.nba = ( function() {
 	} else {
 		document.addEventListener( 'DOMContentLoaded', NBA.init );
 	}
+
+	String.prototype.format = function() {
+		var args = arguments;
+		return this.replace(/{(\d+)}/g, function(match, number) { 
+			return typeof args[number] !== 'undefined' ? args[number] : match;
+		});
+	};
 
 	return NBA;
 

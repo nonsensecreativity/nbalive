@@ -287,6 +287,8 @@ body * {
 .inner {
 	height: 100%;
 	min-height: 100%;
+	white-space: nowrap;
+	max-width: 100%;
 }
 
 /*--------------------------------------------------------------
@@ -940,7 +942,9 @@ body * {
 }
 
 .player-single-head .ovr {
-	float: right;
+	position: absolute;
+	right: 0;
+	top: 13px;
 	font-size: 80px;
 	font-weight: bold;
 	text-shadow: -2px 2px 0 rgba(0, 0, 0, 0.6);
@@ -1143,34 +1147,30 @@ body * {
 	background: #01FF70;
 }
 
+#player-compare {
+	white-space: nowrap;
+}
+
 #player-compare .stats-label {
 	font-size: .875em;
+}
+
+#player-compare .desc-col,
+#player-compare .stats-col,
+#player-compare .stats-label {
+	float: left;
+	position: relative;
+}
+
+#player-compare .desc-col,
+#player-compare .stats-col:not(.stats-label) {
+	padding-left: 1.5%;
+	padding-right: 1.5%;
 }
 
 #player-compare #player-compare-desc {
 	padding: 1em 1.5em;
 	position: relative;
-}
-
-#player-compare #player-compare-desc #compare-one {
-	margin-left: 26%;
-}
-
-#player-compare #player-compare-desc .desc-col {
-	float: left;
-	position: relative;
-}
-
-#player-compare #player-compare-desc .desc-col {
-	width: 30%;
-}
-
-#player-compare #player-compare-desc #compare-one {
-	margin-right: 14%;
-}
-
-#player-compare #player-compare-desc .stats-label {
-	float: left;
 }
 
 #player-compare #player-compare-desc .stats-value {
@@ -1179,10 +1179,9 @@ body * {
 }
 
 #player-compare #player-compare-desc .name {
-	float: left;
 	text-transform: uppercase;
 	font-size: 20px;
-	margin: 20px 0 0 10px;
+	white-space: normal;
 }
 
 #player-compare #player-compare-desc .desc {
@@ -1208,24 +1207,16 @@ body * {
 	font-weight: bold;
 	text-shadow: -2px 2px 0 rgba(0, 0, 0, 0.6);
 	text-align: center;
-	padding: 15px 0;
+	padding: 15px 0 0 0;
 	line-height: 80px;
 }
 
+#player-compare #player-compare-desc #compare-1 {
+	margin-left: 25%;
+}
+
 #player-compare #player-compare-stats .stats-label {
-	width: 26%;
-}
-
-#player-compare #player-compare-stats .stats-col {
-	float: left;
-}
-
-#player-compare #player-compare-stats .stats-col:not(.stats-label) {
-	width: 30%;
-}
-
-#player-compare #player-compare-stats .stats-one {
-	margin-right: 14%;
+	width: 25%;
 }
 
 #player-compare #player-compare-stats .stats-row {
@@ -1263,6 +1254,89 @@ body * {
 	color: #FE2631;
 }
 
+#player-compare.cols-1 .stats-col:not(.stats-label),
+#player-compare.cols-1 .desc-col,
+#player-compare.cols-2 .stats-col:not(.stats-label),
+#player-compare.cols-2 .desc-col {
+	width: 37.5%;
+	padding-left: 3%;
+	padding-right: 3%;
+}
+
+#player-compare.cols-3 #player-compare-desc .pos-lineup,
+#player-compare.cols-4 #player-compare-desc .pos-lineup {
+	float: none;
+	margin-left: auto;
+	margin-right: auto;
+	width: 52px;
+}
+
+#player-compare.cols-3 #player-compare-desc .name,
+#player-compare.cols-4 #player-compare-desc .name {
+	text-align: center;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#player-compare.cols-3 .desc-col,
+#player-compare.cols-3 .stats-col:not(.stats-label) {
+	width: 25%;
+}
+
+#player-compare.cols-3 #player-compare-stats .stats-bar {
+	width: 80%;
+}
+
+#player-compare.cols-4 #player-compare-stats .stats-bar {
+	width: 75%;
+}
+
+#player-compare.cols-4 .desc-col,
+#player-compare.cols-4 .stats-col:not(.stats-label) {
+	width: 18.75%;
+}
+
+#player-compare.cols-4 #player-compare-desc .weight .stats-label,
+#player-compare.cols-4 #player-compare-desc .weight .stats-value,
+#player-compare.cols-4 #player-compare-desc .height .stats-label,
+#player-compare.cols-4 #player-compare-desc .height .stats-value,
+#player-compare.cols-4 #player-compare-desc .name .stats-label,
+#player-compare.cols-4 #player-compare-desc .name .stats-value,
+#player-compare.cols-4 #player-compare-desc .program .stats-label,
+#player-compare.cols-4 #player-compare-desc .program .stats-value {
+	float: none;
+	display: block;
+	text-align: left;
+}
+
+#player-compare.cols-4 #player-compare-desc .weight .stats-label,
+#player-compare.cols-4 #player-compare-desc .height .stats-label,
+#player-compare.cols-4 #player-compare-desc .name .stats-label,
+#player-compare.cols-4 #player-compare-desc .program .stats-label {
+	margin-bottom: 5px;
+}
+
+#player-compare.cols-4 .desc-col .weight,
+#player-compare.cols-4 .desc-col .height {
+	float: left;
+	width: 50%;
+}
+
+#player-compare.cols-4 .desc-col .weight {
+	padding-right: 2%;
+}
+
+#player-compare.cols-4 .desc-col .height {
+	padding-left: 2%;
+	clear: right;
+}
+
+#player-compare.cols-4 .desc-col .team {
+	width: 100%;
+	clear: both;
+}
+
 #player-compare .versus {
 	font-size: 80px;
 	line-height: 80px;
@@ -1277,8 +1351,8 @@ body * {
 }
 
 #player-compare .back {
-	top: 55%;
-	left: 8%;
+	top: 50%;
+	left: 7.5%;
 }
 
 /*--------------------------------------------------------------
