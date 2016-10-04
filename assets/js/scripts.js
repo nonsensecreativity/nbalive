@@ -922,7 +922,7 @@ window.nba = ( function() {
 			cont  = document.querySelector( '.content .inner' ),
 			spin  = document.getElementById( 'loader' ),
 			html, theadInner = [], tbodyInner = [], 
-			className, count, i, len, skip = [], currentRow, currentVal;
+			className, count, i, len, skip = [], currentRow, currentVal, previousVal, highest = [];
 
 
 		table.setAttribute( 'id', 'player-compare' );
